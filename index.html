@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <!-- Yandex.RTB -->
+    <script>window.yaContextCb=window.yaContextCb||[]</script>
+    <script src="https://yandex.ru/ads/system/context.js" async></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КИБЕР-ЭКЗАМЕН 2077 | Алгоритмизация + ЭВМ</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CYBERPUNK 2077 STYLE ===== */
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: rgba(10, 15, 20, 0.9);
+            --neon-green: #00ff66;
+            --neon-blue: #00f0ff;
+            --neon-pink: #ff0055;
+            --neon-yellow: #ffcc00;
+            --neon-purple: #b000ff;
+            --text-main: #ccd6f6;
+            --text-dim: #8892b0;
+            --border-glow: 0 0 10px rgba(0, 240, 255, 0.3), 0 0 20px rgba(0, 240, 255, 0.1);
+            --font-display: 'Orbitron', sans-serif;
+            --font-mono: 'Share Tech Mono', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; opacity: 0.12;
+        }
+
+        /* ===== STICKY AD ===== */
+        .sticky-ad-banner {
+            position: sticky; top: 0; z-index: 1000;
+            background: rgba(0, 5, 10, 0.95);
+            border-bottom: 1px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 8px 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 60px;
+        }
+        .ad-container {
+            width: 100%; max-width: 728px; height: 90px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px dashed var(--neon-pink);
+            display: flex; justify-content: center; align-items: center;
+            position: relative; overflow: hidden;
+        }
+        .ad-container::before {
+            content: 'СПОНСОРСКИЙ КИБЕР-МОДУЛЬ // YANDEX.RTB';
+            position: absolute; top: 2px; left: 5px;
+            font-size: 8px; color: var(--neon-pink);
+            letter-spacing: 1px; opacity: 0.7;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* ===== LAYOUT ===== */
+        .main-container {
+            max-width: 1400px; margin: 0 auto; padding: 20px;
+            width: 100%; flex: 1;
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        /* ===== HEADER ===== */
+        .cyber-header {
+            text-align: center; margin-bottom: 10px; position: relative;
+        }
+        .cyber-header h1 {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            text-transform: uppercase; letter-spacing: 5px;
+            color: var(--neon-green);
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px rgba(0, 255, 102, 0.5);
+            animation: glitch 3s infinite;
+        }
+        .cyber-header .subtitle {
+            color: var(--neon-blue); font-size: 1.1rem;
+            letter-spacing: 2px; text-shadow: 0 0 5px var(--neon-blue);
+            margin-top: 5px;
+        }
+        .author-credit {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+            margin-top: 8px;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+        .author-credit span {
+            color: var(--neon-yellow);
+        }
+        @keyframes glitch {
+            0%, 100% { transform: translate(0); }
+            2% { transform: translate(2px, -2px); }
+            4% { transform: translate(-2px, 2px); }
+            6% { transform: translate(0); }
+        }
+
+        /* ===== NAV TABS ===== */
+        .nav-tabs {
+            display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .nav-btn {
+            background: transparent; color: var(--text-dim);
+            border: 1px solid var(--text-dim); padding: 10px 20px;
+            font-family: var(--font-display); font-size: 0.85rem;
+            text-transform: uppercase; cursor: pointer;
+            transition: all 0.3s ease; border-radius: 4px;
+            letter-spacing: 1px;
+        }
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--neon-green);
+            border-color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+            background: rgba(0, 255, 102, 0.05);
+        }
+
+        .discipline-switcher {
+            display: flex; gap: 12px; justify-content: center;
+            margin-bottom: 20px; flex-wrap: wrap;
+        }
+        .disc-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid var(--text-dim);
+            color: var(--text-dim);
+            padding: 12px 24px;
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+        .disc-btn:hover { border-color: var(--neon-blue); color: var(--neon-blue); }
+        .disc-btn.active[data-disc="algo"] {
+            border-color: var(--neon-green); color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
+            background: rgba(0, 255, 102, 0.08);
+        }
+        .disc-btn.active[data-disc="evm"] {
+            border-color: var(--neon-pink); color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+            background: rgba(255, 0, 85, 0.08);
+        }
+        .disc-btn.active[data-disc="mix"] {
+            border-color: var(--neon-yellow); color: var(--neon-yellow);
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4);
+            background: rgba(255, 204, 0, 0.08);
+        }
+
+        /* ===== PANELS ===== */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 8px; padding: 25px;
+            box-shadow: var(--border-glow);
+            backdrop-filter: blur(10px);
+            position: relative; transition: all 0.3s ease;
+        }
+        .panel::after {
+            content: ''; position: absolute; top: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            opacity: 0.5;
+        }
+
+        /* ===== THEORY ===== */
+        .theory-content h2 {
+            font-family: var(--font-display);
+            color: var(--neon-pink);
+            font-size: 1.7rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+            border-bottom: 1px solid var(--neon-pink);
+            padding-bottom: 5px;
+        }
+        .theory-content h3 {
+            font-family: var(--font-display);
+            color: var(--neon-blue);
+            font-size: 1.25rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        .theory-content h4 {
+            color: var(--neon-yellow);
+            font-size: 1.05rem;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .theory-content p { margin-bottom: 10px; text-align: justify; }
+        .theory-content ul, .theory-content ol { margin-left: 20px; margin-bottom: 15px; }
+        .theory-content li { margin-bottom: 5px; }
+        .theory-content strong { color: var(--neon-green); }
+        .theory-content code {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: var(--neon-yellow);
+            font-family: var(--font-mono);
+        }
+        .highlight-box {
+            background: rgba(0, 240, 255, 0.05);
+            border-left: 4px solid var(--neon-blue);
+            padding: 15px; margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .highlight-box-pink {
+            background: rgba(255, 0, 85, 0.05);
+            border-left: 4px solid var(--neon-pink);
+            padding: 15px; margin: 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .theory-content table {
+            width: 100%; border-collapse: collapse;
+            margin: 15px 0; font-size: 0.88rem;
+        }
+        .theory-content th, .theory-content td {
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 8px; text-align: left;
+        }
+        .theory-content th {
+            background: rgba(0, 240, 255, 0.1);
+            color: var(--neon-blue);
+            font-family: var(--font-display);
+        }
+        .theory-content tr:nth-child(even) { background: rgba(255, 255, 255, 0.02); }
+
+        .code-block {
+            background: #0a0a0a;
+            border: 1px solid var(--neon-green);
+            border-radius: 4px; padding: 15px;
+            overflow-x: auto;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: #00ff66;
+            margin: 15px 0;
+            box-shadow: inset 0 0 20px rgba(0, 255, 102, 0.05);
+            white-space: pre;
+        }
+
+        .scheme-container {
+            display: flex; justify-content: center; align-items: center;
+            flex-wrap: wrap; gap: 20px; margin: 20px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px dashed rgba(0, 240, 255, 0.2);
+        }
+        .scheme-item {
+            display: flex; flex-direction: column;
+            align-items: center; gap: 10px;
+        }
+        .block-box {
+            min-width: 120px; min-height: 50px;
+            display: flex; justify-content: center; align-items: center;
+            text-align: center; font-size: 0.85rem; font-weight: bold;
+            border: 2px solid var(--neon-blue); color: var(--neon-blue);
+            background: rgba(0, 240, 255, 0.05);
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+            padding: 8px 12px;
+        }
+        .block-box.oval { border-radius: 50px; border-color: var(--neon-green); color: var(--neon-green); }
+        .block-box.diamond {
+            width: 100px; height: 100px;
+            transform: rotate(45deg);
+            border-color: var(--neon-yellow); color: var(--neon-yellow);
+            margin: 10px;
+        }
+        .block-box.diamond span { transform: rotate(-45deg); display: block; }
+        .block-box.parallelogram {
+            transform: skew(-20deg);
+            border-color: var(--neon-pink); color: var(--neon-pink);
+        }
+        .block-box.parallelogram span { transform: skew(20deg); display: block; }
+        .arrow-down { color: var(--neon-green); font-size: 1.5rem; line-height: 1; }
+
+        /* ===== QUIZ ===== */
+        .mode-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px; margin-top: 20px;
+        }
+        .mode-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid var(--neon-pink);
+            padding: 20px; border-radius: 8px;
+            cursor: pointer; transition: all 0.3s ease;
+            text-align: center;
+            display: flex; flex-direction: column; justify-content: space-between;
+            height: 100%;
+        }
+        .mode-card:hover {
+            background: rgba(255, 0, 85, 0.1);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+            transform: translateY(-5px);
+        }
+        .mode-card h3 {
+            font-family: var(--font-display);
+            color: var(--neon-pink);
+            margin-bottom: 10px; font-size: 1.3rem;
+        }
+        .mode-card p { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 20px; }
+
+        .btn-cyber {
+            background: transparent;
+            color: var(--neon-blue);
+            border: 2px solid var(--neon-blue);
+            padding: 10px 20px;
+            font-family: var(--font-display);
+            font-size: 0.95rem; text-transform: uppercase;
+            cursor: pointer; transition: all 0.3s ease;
+            border-radius: 4px; letter-spacing: 2px;
+            position: relative; overflow: hidden;
+        }
+        .btn-cyber:hover {
+            background: var(--neon-blue); color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+        .btn-cyber.btn-pink { color: var(--neon-pink); border-color: var(--neon-pink); }
+        .btn-cyber.btn-pink:hover { background: var(--neon-pink); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-pink); }
+        .btn-cyber.btn-yellow { color: var(--neon-yellow); border-color: var(--neon-yellow); }
+        .btn-cyber.btn-yellow:hover { background: var(--neon-yellow); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-yellow); }
+
+        .quiz-header {
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 15px; margin-bottom: 20px;
+            font-family: var(--font-display);
+        }
+        .progress-bar-container {
+            flex: 1; min-width: 200px; height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+            width: 0%; transition: width 0.3s ease;
+            box-shadow: 0 0 10px var(--neon-green);
+        }
+        .stats-display { display: flex; gap: 20px; font-size: 1.1rem; color: var(--neon-yellow); }
+        .question-text {
+            font-size: 1.25rem; margin-bottom: 25px;
+            color: #fff; font-weight: 400; min-height: 80px;
+        }
+        .options-container { display: flex; flex-direction: column; gap: 12px; }
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            color: var(--text-main);
+            padding: 15px 20px; text-align: left;
+            cursor: pointer; font-family: var(--font-mono);
+            font-size: 0.98rem; border-radius: 6px;
+            transition: all 0.2s ease;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .option-btn:hover { background: rgba(0, 240, 255, 0.1); border-color: var(--neon-blue); }
+        .option-btn.correct {
+            background: rgba(0, 255, 102, 0.15);
+            border-color: var(--neon-green); color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+        }
+        .option-btn.wrong {
+            background: rgba(255, 0, 85, 0.15);
+            border-color: var(--neon-pink); color: var(--neon-pink);
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.3);
+        }
+        .option-btn:disabled { cursor: not-allowed; opacity: 0.8; }
+
+        .explanation-box {
+            margin-top: 20px; padding: 15px;
+            border-left: 4px solid var(--neon-yellow);
+            background: rgba(255, 204, 0, 0.05);
+            color: var(--text-main); font-size: 0.95rem;
+            display: none; animation: fadeIn 0.5s ease;
+        }
+        .explanation-box.show { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .next-btn-container { margin-top: 20px; text-align: right; display: none; }
+        .next-btn-container.show { display: block; }
+
+        /* Result */
+        .result-screen { text-align: center; padding: 40px 20px; }
+        .result-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem; color: var(--neon-green);
+            text-shadow: 0 0 20px var(--neon-green);
+            margin-bottom: 20px;
+        }
+        .rank-display {
+            font-size: 1.7rem; color: var(--neon-yellow);
+            margin: 20px 0; font-family: var(--font-display);
+            text-shadow: 0 0 10px var(--neon-yellow);
+        }
+        .score-details { font-size: 1.15rem; margin-bottom: 30px; }
+        .error-list {
+            text-align: left; max-height: 400px; overflow-y: auto;
+            background: rgba(0, 0, 0, 0.5); padding: 20px;
+            border: 1px solid rgba(255, 0, 85, 0.3);
+            border-radius: 6px; margin-bottom: 20px;
+        }
+        .error-item {
+            margin-bottom: 15px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .error-item .q-text { color: var(--neon-pink); font-weight: bold; }
+        .error-item .correct-ans { color: var(--neon-green); }
+        .error-item .explain-text { color: var(--text-dim); font-size: 0.9rem; margin-top: 5px; }
+
+        .hidden { display: none !important; }
+
+        /* Footer */
+        .cyber-footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(0, 240, 255, 0.2);
+            margin-top: 20px;
+            letter-spacing: 1px;
+        }
+        .cyber-footer span { color: var(--neon-yellow); }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
+
+        @media (max-width: 768px) {
+            .sticky-ad-banner { padding: 5px 0; }
+            .ad-container { height: 60px; max-width: 320px; }
+            .cyber-header h1 { font-size: 1.8rem; }
+            .panel { padding: 15px; }
+            .question-text { font-size: 1.05rem; }
+            .scheme-container { flex-direction: column; }
+            .disc-btn { font-size: 0.8rem; padding: 8px 14px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- Sticky Ad Banner -->
+    <div class="sticky-ad-banner">
+        <div class="ad-container" id="yandex-rtb-banner">
+            <!-- Yandex.RTB R-A-20361605-1 -->
+            <div id="yandex_rtb_R-A-20361605-1"></div>
+            <script>
+            window.yaContextCb.push(() => {
+                Ya.Context.AdvManager.render({
+                    "blockId": "R-A-20361605-1",
+                    "renderTo": "yandex_rtb_R-A-20361605-1"
+                })
+            })
+            </script>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="cyber-header">
+            <h1>КИБЕР-ЭКЗАМЕН 2077</h1>
+            <div class="subtitle">// АЛГОРИТМИЗАЦИЯ + ЭВМ //</div>
+            <div class="author-credit">Разработал: <span>Рябчук Иван Андреевич</span> | АиКИ, 1 курс</div>
+        </div>
+
+        <!-- Discipline Switcher -->
+        <div class="discipline-switcher" id="discipline-switcher">
+            <button class="disc-btn active" data-disc="algo" onclick="switchDiscipline('algo')">🧠 АЛГОРИТМИЗАЦИЯ</button>
+            <button class="disc-btn" data-disc="evm" onclick="switchDiscipline('evm')">💻 ЭВМ И АРХИТЕКТУРА</button>
+            <button class="disc-btn" data-disc="mix" onclick="switchDiscipline('mix')">⚡ МИКС (ВСЁ)</button>
+        </div>
+
+        <!-- Main Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="switchTab('theory')">📚 ТЕОРИЯ</button>
+            <button class="nav-btn" onclick="switchTab('quiz')">🎯 ТРЕНАЖЕР</button>
+        </div>
+
+        <!-- ================= THEORY TAB ================= -->
+        <div id="theory-tab" class="panel">
+            <!-- ALGO THEORY -->
+            <div id="theory-algo" class="theory-content">
+                <h2>1. ПОНЯТИЕ ВЕЛИЧИН И ДАННЫХ В ПРОГРАММИРОВАНИИ</h2>
+                <h3>1.1. Базовые понятия информатики, величины и данные</h3>
+                <p>Раздел информатики, посвящённый алгоритмизации и программированию, изучает методы разработки программного обеспечения (ПО), а также методы программного управления устройствами и вычислительными машинами. Создание какого-либо программного продукта — это, по сути, решение некоторой задачи, в процессе чего программисту приходится иметь дело с различными величинами.</p>
+                <div class="highlight-box">
+                    <strong>Величина</strong> — это какая-либо характеристика объекта, существенная для решения задачи (например: длина отрезка, площадь фигуры, количество символов, процентная ставка по вкладу и т. д.).<br><br>
+                    <strong>Данные</strong> — это совокупность величин, обрабатываемых при решении задачи.
+                </div>
+                <h3>1.2. Классификация данных в рамках решаемой задачи</h3>
+                <ul>
+                    <li><strong>1. Исходные данные</strong> — совокупность величин, значениями которых пользователь может варьировать в ходе выполнения программы (приложения).</li>
+                    <li><strong>2. Выходные данные</strong> — совокупность величин, содержащих результат выполнения программы.</li>
+                    <li><strong>3. Промежуточные данные</strong> — совокупность величин, связывающих исходные и выходные данные.</li>
+                </ul>
+                <div class="highlight-box-pink">
+                    <strong>Логическая структура определения понятия (Понятие = Род + Видовое отличие)</strong><br>
+                    На примере понятия «Исходные данные»:<br>
+                    1) Родовой признак: «совокупность величин».<br>
+                    2) Видовое отличие: наличие механизма варьирования (ввода) величин в ходе работы программы.<br>
+                    Аналогично для «Выходные данные»: родовой признак — совокупность величин; видовое отличие — содержащих результат.
+                </div>
+                <h3>1.3. Пример выделения данных при решении квадратного уравнения</h3>
+                <p>Задача: решить квадратное уравнение ax² + bx + c = 0.</p>
+                <ul>
+                    <li><strong>Исходные данные:</strong> a ∈ R \ {0}, b ∈ R, c ∈ R.</li>
+                    <li><strong>Выходные данные:</strong> x₁ ∈ R, x₂ ∈ R.</li>
+                    <li><strong>Промежуточные данные:</strong> дискриминант D = b² − 4ac.</li>
+                    <li><strong>Связь:</strong> x₁ = (−b + √D) / (2a), x₂ = (−b − √D) / (2a).</li>
+                </ul>
+                <h3>1.4. Свойства величин. Постоянные и переменные величины</h3>
+                <ul>
+                    <li><strong>1. Имя (идентификатор) величины</strong> — последовательность символов алфавита языка программирования.</li>
+                    <li><strong>2. Тип величины</strong> — определяет способ хранения, область допустимых значений и допустимые операции.</li>
+                    <li><strong>3. Значение величины</strong> — на физическом уровне ячейка оперативной памяти, хранящая значение в виде двоичного кода.</li>
+                </ul>
+                <p>По возможности изменения значения:</p>
+                <ul>
+                    <li><strong>Постоянная величина (константа)</strong> — значение невозможно изменить в ходе выполнения программы.</li>
+                    <li><strong>Переменная</strong> — значение может изменяться в ходе работы программы.</li>
+                </ul>
+
+                <h2>2. ТИПЫ ДАННЫХ В ЯЗЫКАХ ПРОГРАММИРОВАНИЯ</h2>
+                <h3>2.1. Характеристики типа данных</h3>
+                <p>Тип данных однозначно определяет 3 характеристики:</p>
+                <ol>
+                    <li>Формат внутреннего представления величины в памяти ЭВМ.</li>
+                    <li>Множество допустимых значений.</li>
+                    <li>Множество допустимых операций.</li>
+                </ol>
+                <h3>2.2. Простые (примитивные / скалярные) типы данных</h3>
+                <ul>
+                    <li><strong>Целый тип (Z)</strong> — для целочисленных величин.</li>
+                    <li><strong>Вещественный тип (R)</strong> — для величин с дробной частью.</li>
+                    <li><strong>Логический (булевский) тип</strong> — False (0) / True (1).</li>
+                    <li><strong>Символьный тип</strong> — для отдельных символов.</li>
+                </ul>
+                <table>
+                    <tr><th>Тип</th><th>Допустимые значения</th><th>Допустимые операции</th><th>Формат в памяти</th></tr>
+                    <tr><td>Целый (Z)</td><td>Целые числа из диапазона</td><td>+, -, *, /, %, сравнения</td><td>С фиксированной точкой</td></tr>
+                    <tr><td>Вещественный (R)</td><td>Любые числа из диапазона</td><td>+, -, *, /, сравнения</td><td>С плавающей точкой</td></tr>
+                    <tr><td>Логический</td><td>False, True</td><td>НЕ, И, ИЛИ, сравнения</td><td>0 — False, 1 — True</td></tr>
+                    <tr><td>Символьный</td><td>Символы алфавита</td><td>Конкатенация, сравнение кодов</td><td>Двоичный код символа</td></tr>
+                </table>
+                <h3>2.3. Простые и структурированные типы данных</h3>
+                <ul>
+                    <li><strong>Скалярный тип</strong> — 1 имя и 1 значение.</li>
+                    <li><strong>Структурированный тип</strong> — 1 общее имя, но значение — совокупность других величин (массивы, строки, записи, файлы, кортежи, словари).</li>
+                </ul>
+
+                <h2>3. ЭТАПЫ РЕШЕНИЯ ЗАДАЧ НА ЭВМ</h2>
+                <h3>3.1. Общая последовательность этапов</h3>
+                <ol>
+                    <li>Постановка задачи.</li>
+                    <li>Математическая постановка (построение математической модели).</li>
+                    <li>Техническое задание — ТЗ (спецификация).</li>
+                    <li>Выбор программного обеспечения (ПО).</li>
+                    <li>Проектирование тестов.</li>
+                    <li>Реализация (алгоритмизация, программирование, отладка и тестирование).</li>
+                    <li>Получение результата, его анализ и интерпретация.</li>
+                </ol>
+                <h3>3.2. Этап №1: Постановка задачи и анализ её структуры</h3>
+                <p>Ключевые вопросы: Что дано? Что требуется найти? Корректно ли условие?</p>
+                <p>Задача состоит из трёх компонентов: <strong>Условие, Требование, Оператор</strong>.</p>
+                <ul>
+                    <li><strong>Условие задачи</strong> — предметная область и свойства объектов (качественные и количественные).</li>
+                    <li><strong>Требование задачи</strong> — указание цели («найти», «проанализировать» и т.д.).</li>
+                    <li><strong>Оператор задачи</strong> — совокупность действий для выполнения требования.</li>
+                </ul>
+                <div class="highlight-box-pink">
+                    <strong>Корректность постановки:</strong> если нет противоречий и достаточно данных — задача корректна. Иначе вводятся допущения.<br><br>
+                    <strong>Пример:</strong> «Найти площадь фигуры» — некорректно (не указан вид фигуры).<br>
+                    Допущение 1: фигура — прямоугольник со сторонами a и b.<br>
+                    Допущение 2: фигура из множества F = {прямоугольник, круг, равносторонний треугольник}.
+                </div>
+                <h3>3.3. Этап №2: Математическая постановка</h3>
+                <p>Формализация условия в математическую форму: вводятся обозначения для исходных и выходных данных, устанавливается связь формулами.</p>
+                <h3>3.4. Этап №3: Техническое задание — ТЗ</h3>
+                <h4>Шаг 3.1. Таблица внешней спецификации</h4>
+                <p>5 характеристик каждой величины: идентификатор, назначение, тип, ОДЗ, единицы измерения.</p>
+                <h4>Шаг 3.2. Формулировка условий и ограничений</h4>
+                <p>Полный перечень условий на исходные данные с указанием ответных действий алгоритма. 4 варианта ТЗ: от простейшего до наиболее защищённого.</p>
+                <h4>Шаг 3.3. Интерфейс приложения</h4>
+                <p>Способ взаимодействия пользователя с программой, макеты экранов.</p>
+                <h3>3.5. Этап №4: Выбор программного обеспечения (ПО)</h3>
+                <p>Выбор на основе ТЗ. В рамках дисциплины изучается C++ и соответствующая среда разработки.</p>
+                <h3>3.6. Этап №5: Проектирование тестов</h3>
+                <ul>
+                    <li><strong>Тест</strong> — совокупность исходных данных с заранее известным результатом.</li>
+                    <li><strong>Цель тестов</strong> — найти как можно больше ошибок.</li>
+                </ul>
+                <p><strong>3 принципа:</strong> независимость составителя, опережающая разработка, повторное тестирование после правок.</p>
+                <p><strong>Методы:</strong> «чёрный ящик» (без знания кода) и «белый ящик» (с доступом к коду).</p>
+                <p><strong>3 правила «белого ящика»:</strong> покрытие условий, граничные случаи, недопустимые случаи.</p>
+
+                <h2>4. АЛГОРИТМИЗАЦИЯ И МЕТОДЫ РАЗРАБОТКИ АЛГОРИТМОВ</h2>
+                <h3>4.1. Понятие алгоритма, команды, операторы и СКИ</h3>
+                <div class="highlight-box">
+                    <strong>Определение алгоритма (по А. П. Ершову, 1985 г.)</strong><br>
+                    Алгоритм — это понятное и точное предписание (указание) исполнителю совершить последовательность действий, направленных на достижение указанной цели или на решение поставленной задачи.
+                </div>
+                <ul>
+                    <li><strong>Команда</strong> — отдельное законченное указание исполнителю.</li>
+                    <li><strong>Оператор</strong> — реализация команды в языке программирования.</li>
+                    <li><strong>СКИ</strong> — система команд исполнителя.</li>
+                    <li><strong>Алгоритмизация</strong> — процесс составления алгоритма.</li>
+                </ul>
+                <h3>4.2. Свойства алгоритма</h3>
+                <ol>
+                    <li><strong>Дискретность</strong> — разбиение на шаги.</li>
+                    <li><strong>Понятность</strong> — команды понятны исполнителю.</li>
+                    <li><strong>Детерминированность</strong> — однозначность результата.</li>
+                    <li><strong>Результативность</strong> — завершение за конечное число шагов.</li>
+                    <li><strong>Массовость</strong> (дополнительное) — применимость к классу задач.</li>
+                </ol>
+                <h3>4.3. Способы записи алгоритмов и элементы блок-схем по ГОСТ 19.701-90</h3>
+                <p>Способы: словесный, аналитический, графический (блок-схемы).</p>
+                <table>
+                    <tr><th>Фигура</th><th>Название</th><th>Назначение</th></tr>
+                    <tr><td>Овал</td><td>Терминатор</td><td>Начало/конец</td></tr>
+                    <tr><td>Параллелограмм</td><td>Данные</td><td>Ввод/вывод</td></tr>
+                    <tr><td>Прямоугольник</td><td>Процесс</td><td>Вычисление</td></tr>
+                    <tr><td>Ромб</td><td>Решение</td><td>Условие</td></tr>
+                    <tr><td>Шестиугольник</td><td>Подготовка</td><td>Цикл с параметром</td></tr>
+                    <tr><td>Прямоугольник с двойными линиями</td><td>Предопределённый процесс</td><td>Вызов подпрограммы</td></tr>
+                </table>
+                <h3>4.4. Методы разработки алгоритмов: структурный подход</h3>
+                <p>3 базовые структуры: следование, разветвление, цикл. Каждая имеет 1 вход и 1 выход.</p>
+                <div class="scheme-container">
+                    <div class="scheme-item">
+                        <h4>Следование</h4>
+                        <div class="block-box">Блок A1</div>
+                        <div class="arrow-down">↓</div>
+                        <div class="block-box">Блок A2</div>
+                    </div>
+                    <div class="scheme-item">
+                        <h4>Разветвление</h4>
+                        <div class="block-box diamond"><span>Условие α</span></div>
+                        <div style="display: flex; gap: 20px;">
+                            <div style="text-align: center;">
+                                <div style="color: var(--neon-pink);">-</div>
+                                <div class="arrow-down">↓</div>
+                                <div class="block-box">A2</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="color: var(--neon-green);">+</div>
+                                <div class="arrow-down">↓</div>
+                                <div class="block-box">A1</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="scheme-item">
+                        <h4>Цикл «пока»</h4>
+                        <div class="block-box diamond"><span>Условие α</span></div>
+                        <div style="text-align: center;">
+                            <div style="color: var(--neon-green);">+</div>
+                            <div class="arrow-down">↓</div>
+                            <div class="block-box">Тело T</div>
+                        </div>
+                    </div>
+                </div>
+                <h3>4.5. Виды алгоритмов и команды</h3>
+                <ul>
+                    <li><strong>Линейный</strong> — только следование. Команды: ввод, присваивание, вывод.</li>
+                    <li><strong>Разветвляющийся</strong> — содержит условие.</li>
+                    <li><strong>Циклический</strong> — многократное выполнение.</li>
+                </ul>
+                <h3>5. ПРАКТИЧЕСКАЯ РАБОТА №2</h3>
+                <p><strong>Задача 3 (линейный алгоритм):</strong> расстояние между двумя точками.</p>
+                <ul>
+                    <li>Модель: S = √((x₂ − x₁)² + (y₂ − y₁)²).</li>
+                </ul>
+                <p><strong>Задача на разветвление №1:</strong> принадлежность точки кругу.</p>
+                <ul>
+                    <li>Формула: x² + y² ≤ r² → «Принадлежит», иначе «Не принадлежит».</li>
+                </ul>
+                <div class="code-block">// Фрагмент кода на C++
+if (r > 0) {
+    cout &lt;&lt; "Введите координаты точки:";
+    cin &gt;&gt; x &gt;&gt; y;
+    if (x * x + y * y &lt;= r * r)
+        cout &lt;&lt; "Принадлежит";
+    else
+        cout &lt;&lt; "Не принадлежит";
+} else {
+    cout &lt;&lt; "Ошибка, радиус введён неверно!";
+}</div>
+                <p><strong>Задача на разветвление №2:</strong> построение треугольника из трёх отрезков (неравенство треугольника: a+b>c ∧ a+c>b ∧ b+c>a).</p>
+            </div>
+
+            <!-- EVM THEORY -->
+            <div id="theory-evm" class="theory-content hidden">
+                <h2>1. ПРЕДМЕТНОЕ НАЗНАЧЕНИЕ ЭВМ. ПОНЯТИЕ ИНФОРМАЦИИ, ДАННЫХ И МЕТОДОВ</h2>
+                <h3>1.1. Информатика и ЭВМ</h3>
+                <p><strong>Научное направление «ЭВМ и информатика»</strong> изучает информационные процессы, возникающие в объектах различной природы, и возможность их автоматизации.</p>
+                <p><strong>Основные понятия:</strong> информационный процесс, информационная модель, алгоритм, программа, вычислительное устройство (ЭВМ).</p>
+                <p>Вклад внесли: Лейбниц, Беббидж, Буль, Тьюринг, Шеннон, Винер.</p>
+                <h3>1.2. Подходы к пониманию информации в науке</h3>
+                <ul>
+                    <li><strong>В физике (40-е годы):</strong> мера упорядоченности, антиэнтропии (хаоса) в системе.</li>
+                    <li><strong>В кибернетике:</strong> всё то, что задействовано в каналах связи при управлении.</li>
+                    <li><strong>В математике:</strong> совокупность символов соответствующего алфавита или кодовой таблицы.</li>
+                    <li><strong>В естественных науках:</strong> знания об уровне развития объектов или явлений окружающего мира.</li>
+                </ul>
+                <div class="highlight-box-pink">
+                    <strong>Ключевое определение:</strong> Данные — это зарегистрированные сигналы, а информация — это результат слияния данных и адекватных им методов.
+                </div>
+                <h3>1.3. Диалектическое единство данных и методов</h3>
+                <p>Сигналы → регистрация → ДАННЫЕ → применение метода (считывание/обработка в ЭВМ) → ИНФОРМАЦИЯ (динамический результат).</p>
+                <h3>1.4. Свойства и процессы обработки информации в ЭВМ</h3>
+                <p><strong>Свойства:</strong> объективность, полнота, достоверность, адекватность, доступность, актуальность.</p>
+                <p><strong>Виды информационных процессов:</strong> сбор/поиск, передача, хранение, обработка, защита, представление.</p>
+                <ul>
+                    <li><strong>Источники информации</strong> — элементы окружающего мира, передающие сведения.</li>
+                    <li><strong>Потребители (приемники)</strong> — субъект, получающий и использующий данные.</li>
+                </ul>
+
+                <h2>2. АРХИТЕКТУРА ЭВМ И ПОДСИСТЕМА ПАМЯТИ</h2>
+                <h3>2.1. Основные определения</h3>
+                <p><strong>ЭВМ</strong> — устройство или комплекс устройств для автоматической обработки информации, решения задач путём выполнения заданной программы.</p>
+                <p><strong>Процессор (CPU)</strong> — центральное устройство, управляющее процессами и обрабатывающее данные. Включает АЛУ, УУ, регистры и кэш-память.</p>
+                <h3>2.2. Иерархия подсистемы памяти ЭВМ</h3>
+                <ol>
+                    <li><strong>Сверхбыстрая память:</strong> регистры процессора и кэш-память (L1, L2, L3).</li>
+                    <li><strong>Оперативная память (ОЗУ / RAM):</strong> энергозависимая динамическая память для текущих программ.</li>
+                    <li><strong>Постоянная память (ПЗУ / ROM):</strong> энергонезависимая память, хранящая BIOS/UEFI и POST-тесты.</li>
+                    <li><strong>Внешняя память (ВЗУ):</strong> HDD, SSD, флеш-накопители и оптические диски.</li>
+                </ol>
+                <h3>2.3. Структура ЭВМ и вычислительная система</h3>
+                <table>
+                    <tr><th>ЦЕНТРАЛЬНЫЕ УСТРОЙСТВА</th><th>ПЕРИФЕРИЙНЫЕ: Ввод</th><th>ПЕРИФЕРИЙНЫЕ: Вывод</th><th>ВНЕШНИЕ НАКОПИТЕЛИ (ВЗУ)</th><th>СИСТЕМНЫЙ БЛОК</th></tr>
+                    <tr>
+                        <td>• Процессор (CPU)<br>• ОЗУ (RAM)<br>• ПЗУ (ROM)<br>• Кэш-память<br>• Системная шина</td>
+                        <td>• Клавиатура<br>• Мышь<br>• Сканер<br>• Веб-камера<br>• Микрофон<br>• Сенсорный экран</td>
+                        <td>• Монитор<br>• Принтер<br>• Плоттер<br>• Акустическая система<br>• Проектор</td>
+                        <td>• HDD (НЖМД)<br>• SSD<br>• Flash-накопитель<br>• Внешний HDD/SSD<br>• Карты памяти</td>
+                        <td>• Материнская плата<br>• Корпус<br>• Блок питания<br>• Система охлаждения</td>
+                    </tr>
+                </table>
+                <h3>Расшифровка аббревиатур</h3>
+                <table>
+                    <tr><th>Аббревиатура</th><th>Расшифровка</th></tr>
+                    <tr><td>ЭВМ</td><td>Электронно-вычислительная машина</td></tr>
+                    <tr><td>ОЗУ</td><td>Оперативное запоминающее устройство</td></tr>
+                    <tr><td>ПЗУ</td><td>Постоянное запоминающее устройство</td></tr>
+                    <tr><td>ВЗУ</td><td>Внешнее запоминающее устройство</td></tr>
+                    <tr><td>HDD</td><td>Hard Disk Drive (накопитель на жестких магнитных дисках)</td></tr>
+                    <tr><td>SSD</td><td>Solid-State Drive (твердотельный накопитель)</td></tr>
+                    <tr><td>BIOS</td><td>Basic Input/Output System (базовая система ввода-вывода)</td></tr>
+                    <tr><td>CPU</td><td>Central Processing Unit (центральный процессор)</td></tr>
+                </table>
+
+                <h2>3. ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ (ПО) ЭВМ</h2>
+                <h3>3.1. Классификация ПО</h3>
+                <ul>
+                    <li><strong>Системное ПО</strong> — ОС, оболочки, утилиты, драйверы.</li>
+                    <li><strong>Прикладное ПО</strong> — общего и специализированного назначения.</li>
+                    <li><strong>Инструментальные системы</strong> — компиляторы, интерпретаторы, IDE.</li>
+                </ul>
+                <table>
+                    <tr><th>Системное ПО: ОС и Оболочки</th><th>Системное ПО: Утилиты и Драйверы</th><th>Прикладное ПО: Общее и Спец.</th><th>Инструментальные системы</th></tr>
+                    <tr>
+                        <td>Windows, Linux, macOS, Android, iOS, графические оболочки</td>
+                        <td>Архиваторы, антивирусы, драйверы устройств</td>
+                        <td>Текстовые редакторы, СУБД, браузеры, САПР, бухгалтерия</td>
+                        <td>Компиляторы, отладчики, IDE</td>
+                    </tr>
+                </table>
+
+                <h2>4. ФАЙЛОВЫЕ СИСТЕМЫ ЭВМ</h2>
+                <h3>4.1. Основные определения</h3>
+                <p><strong>Файл</strong> — поименованная совокупность данных на внешнем носителе. Имя файла = имя + расширение (<code>filename.extension</code>).</p>
+                <h3>4.2. Сравнение файловых систем (NTFS, ext3, ext4)</h3>
+                <table>
+                    <tr><th>Критерий</th><th>NTFS (Windows)</th><th>ext3 (Linux)</th><th>ext4 (Linux)</th></tr>
+                    <tr><td>Основная ОС</td><td>Windows NT / 10 / 11</td><td>Linux (историческая)</td><td>Linux (современный стандарт)</td></tr>
+                    <tr><td>Главная структура</td><td>MFT (Главная файловая таблица)</td><td>Таблицы Inode и группы блоков</td><td>Гибкие группы блоков, HTree</td></tr>
+                    <tr><td>Адресация данных</td><td>Экстенты + резидентные атрибуты</td><td>15 прямых и косвенных указателей</td><td>Экстенты (до 128 МБ) + delalloc</td></tr>
+                    <tr><td>Максимальный размер тома</td><td>До 8 ПБ (практически)</td><td>До 32 ТБ</td><td>До 1 ЭБ</td></tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- ================= QUIZ TAB ================= -->
+        <div id="quiz-tab" class="panel hidden">
+            <!-- Start Screen -->
+            <div id="start-screen">
+                <h2 style="font-family: var(--font-display); color: var(--neon-green); text-align: center; margin-bottom: 20px;">ВЫБЕРИ РЕЖИМ ПРОХОЖДЕНИЯ</h2>
+                <p style="text-align: center; color: var(--text-dim); margin-bottom: 10px;" id="current-disc-label">
+                    Активная дисциплина: <span style="color: var(--neon-green);">Алгоритмизация и программирование</span>
+                </p>
+                <p style="text-align: center; color: var(--text-dim); margin-bottom: 20px;">
+                    Вопросы подтягиваются из пула выбранной дисциплины.
+                </p>
+                <div class="mode-selection">
+                    <div class="mode-card" onclick="startQuiz(20)">
+                        <h3>ЭКСПРЕСС-ТЕСТ</h3>
+                        <p>20 вопросов. Быстрая проверка.</p>
+                        <button class="btn-cyber">ЗАПУСТИТЬ</button>
+                    </div>
+                    <div class="mode-card" onclick="startQuiz(50)">
+                        <h3>ХАРДКОР-МАРАФОН</h3>
+                        <p>50 вопросов. Для продвинутых.</p>
+                        <button class="btn-cyber btn-pink">ЗАПУСТИТЬ</button>
+                    </div>
+                    <div class="mode-card" onclick="startQuiz(150)">
+                        <h3>ПОЛНЫЙ ЭКЗАМЕН</h3>
+                        <p>150 вопросов. Полный протокол.</p>
+                        <button class="btn-cyber btn-yellow">ЗАПУСТИТЬ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Screen -->
+            <div id="quiz-screen" class="hidden">
+                <div class="quiz-header">
+                    <div>ВОПРОС <span id="current-q-num">1</span>/<span id="total-q-num">20</span></div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="stats-display">
+                        <span>✅ <span id="correct-count">0</span></span>
+                        <span>❌ <span id="wrong-count">0</span></span>
+                    </div>
+                </div>
+                <div class="question-text" id="question-text">Загрузка...</div>
+                <div class="options-container" id="options-container"></div>
+                <div class="explanation-box" id="explanation-box"></div>
+                <div class="next-btn-container" id="next-btn-container">
+                    <button class="btn-cyber" id="next-btn">ДАЛЕЕ →</button>
+                </div>
+            </div>
+
+            <!-- Result Screen -->
+            <div id="result-screen" class="hidden">
+                <div class="result-screen">
+                    <div class="result-title">ПРОТОКОЛ ЗАВЕРШЕН</div>
+                    <div class="rank-display" id="rank-display">РАНГ: ЗАГРУЗКА...</div>
+                    <div class="score-details" id="score-details"></div>
+                    <h3 style="color: var(--neon-pink); margin-bottom: 10px;">СПИСОК ОШИБОК:</h3>
+                    <div class="error-list" id="error-list"></div>
+                    <button class="btn-cyber" onclick="location.reload()">ЗАПУСТИТЬ ЗАНОВО</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="cyber-footer">
+        Разработал: <span>Рябчук Иван Андреевич</span> | АиКИ, 1 курс | 2024
+    </div>
+
+    <script>
+        // ===== MATRIX RAIN =====
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()_+-=[]{}|;:,.<>?/~`';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = [];
+        for (let i = 0; i < columns; i++) drops[i] = 1;
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(5, 5, 5, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#00ff66';
+            ctx.font = fontSize + 'px monospace';
+            for (let i = 0; i < drops.length; i++) {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // ===== STATE =====
+        let activeDiscipline = 'algo';
+        let activeTab = 'theory';
+
+        // ===== DATA: ALGO QUESTIONS =====
+        const algoQuestions = [
+            { q: "Что такое величина в программировании?", a: ["Характеристика объекта, существенная для задачи", "Тип данных", "Переменная", "Константа"], c: 0, e: "Величина — характеристика объекта (длина, площадь, количество)." },
+            { q: "Что такое данные?", a: ["Совокупность величин, обрабатываемых при решении задачи", "Программа", "Алгоритм", "Компьютер"], c: 0, e: "Данные — совокупность величин." },
+            { q: "Какие данные называются исходными?", a: ["Те, которыми можно варьировать", "Результат программы", "Промежуточные значения", "Константы"], c: 0, e: "Исходные данные — вводятся пользователем." },
+            { q: "Какие данные называются выходными?", a: ["Содержащие результат выполнения программы", "Вводимые пользователем", "Промежуточные", "Константы"], c: 0, e: "Выходные данные — результат работы программы." },
+            { q: "Какие данные называются промежуточными?", a: ["Связывающие исходные и выходные", "Вводимые пользователем", "Результат", "Константы"], c: 0, e: "Промежуточные данные — вспомогательные величины." },
+            { q: "Что такое имя величины?", a: ["Идентификатор в программе", "Значение", "Тип", "Адрес"], c: 0, e: "Имя (идентификатор) — последовательность символов для обращения к величине." },
+            { q: "Что определяет тип величины?", a: ["Способ хранения, допустимые значения и операции", "Имя", "Значение", "Адрес"], c: 0, e: "Тип определяет формат хранения, диапазон и операции." },
+            { q: "Что такое значение величины?", a: ["Содержимое ячейки памяти", "Имя", "Тип", "Адрес"], c: 0, e: "Значение — конкретное содержимое ячейки памяти." },
+            { q: "Что такое константа?", a: ["Величина, неизменяемая в ходе программы", "Переменная", "Тип данных", "Функция"], c: 0, e: "Константа — неизменяемая величина." },
+            { q: "Что такое переменная?", a: ["Величина, изменяемая в ходе программы", "Константа", "Тип данных", "Функция"], c: 0, e: "Переменная — изменяемая величина." },
+            { q: "Что определяет тип данных?", a: ["Формат хранения, множество значений, операции", "Только имя", "Только значение", "Только адрес"], c: 0, e: "Тип данных определяет три характеристики." },
+            { q: "Какой тип данных предназначен для целых чисел?", a: ["Целый (Z)", "Вещественный (R)", "Логический", "Символьный"], c: 0, e: "Целый тип (Z) — для чисел без дробной части." },
+            { q: "Какой тип данных предназначен для чисел с дробной частью?", a: ["Вещественный (R)", "Целый (Z)", "Логический", "Символьный"], c: 0, e: "Вещественный тип (R) — для чисел с дробной частью." },
+            { q: "Какой тип данных принимает значения True/False?", a: ["Логический", "Целый", "Вещественный", "Символьный"], c: 0, e: "Логический (булевский) тип — True/False." },
+            { q: "Какой тип данных предназначен для отдельных символов?", a: ["Символьный", "Целый", "Вещественный", "Логический"], c: 0, e: "Символьный тип — для символов алфавита." },
+            { q: "В каком формате хранятся целые числа?", a: ["С фиксированной точкой", "С плавающей точкой", "В виде строки", "В виде символа"], c: 0, e: "Целые числа — формат с фиксированной точкой." },
+            { q: "В каком формате хранятся вещественные числа?", a: ["С плавающей точкой", "С фиксированной точкой", "В виде строки", "В виде символа"], c: 0, e: "Вещественные числа — формат с плавающей точкой." },
+            { q: "Как хранится логический тип в памяти?", a: ["0 — False, 1 — True", "0 — True, 1 — False", "В виде строки", "В виде символа"], c: 0, e: "Логический тип хранится как целое число: 0 или 1." },
+            { q: "Какие операции допустимы для целого типа?", a: ["Арифметические и сравнения", "Только сравнения", "Только конкатенация", "Логические"], c: 0, e: "Для целых: +, -, *, /, %, сравнения." },
+            { q: "Какие операции допустимы для вещественного типа?", a: ["Арифметические и сравнения", "Только сравнения", "Только конкатенация", "Логические"], c: 0, e: "Для вещественных: +, -, *, /, сравнения." },
+            { q: "Какие операции допустимы для логического типа?", a: ["Логические и сравнения", "Арифметические", "Конкатенация", "Только сравнения"], c: 0, e: "Для логического: НЕ, И, ИЛИ, сравнения." },
+            { q: "Какая операция допустима для символьного типа?", a: ["Конкатенация и сравнение кодов", "Арифметические", "Логические", "Только сравнение"], c: 0, e: "Для символьного: конкатенация (+), сравнение." },
+            { q: "Что такое скалярный тип?", a: ["Тип с одним именем и одним значением", "Структурированный тип", "Массив", "Строка"], c: 0, e: "Скалярный (простой) тип — 1 имя, 1 значение." },
+            { q: "Что такое структурированный тип?", a: ["Тип с одним именем и совокупностью значений", "Скалярный тип", "Целый тип", "Вещественный тип"], c: 0, e: "Структурированный тип — 1 имя, много значений (массив, строка)." },
+            { q: "Что из перечисленного является структурированным типом?", a: ["Массив", "Целое число", "Символ", "Логическое значение"], c: 0, e: "Массив — структурированный тип." },
+            { q: "Что из перечисленного является структурированным типом?", a: ["Строка", "Целое число", "Символ", "Логическое значение"], c: 0, e: "Строка — структурированный тип." },
+            { q: "Что из перечисленного является структурированным типом?", a: ["Запись (структура)", "Целое число", "Символ", "Логическое значение"], c: 0, e: "Запись — структурированный тип." },
+            { q: "Что из перечисленного является структурированным типом?", a: ["Файл", "Целое число", "Символ", "Логическое значение"], c: 0, e: "Файл — структурированный тип." },
+            { q: "Сколько этапов включает решение задачи на ЭВМ?", a: ["7", "5", "10", "3"], c: 0, e: "7 этапов: постановка, мат. модель, ТЗ, выбор ПО, тесты, реализация, анализ." },
+            { q: "Что включает постановка задачи?", a: ["Условие, требование, оператор", "Только условие", "Только требование", "Только оператор"], c: 0, e: "Задача состоит из условия, требования и оператора." },
+            { q: "Что такое предметная область?", a: ["Множество объектов, о которых идёт речь", "Свойства объектов", "Требование задачи", "Оператор задачи"], c: 0, e: "Предметная область — множество объектов задачи." },
+            { q: "Что такое требование задачи?", a: ["Указание цели решения", "Условие", "Оператор", "Предметная область"], c: 0, e: "Требование — что нужно найти (цель)." },
+            { q: "Что такое оператор задачи?", a: ["Совокупность действий для выполнения требования", "Условие", "Требование", "Предметная область"], c: 0, e: "Оператор — действия над условием." },
+            { q: "Когда постановка задачи считается корректной?", a: ["Нет противоречий и достаточно данных", "Есть противоречия", "Мало данных", "Нет требования"], c: 0, e: "Корректная постановка: нет противоречий, достаточно данных." },
+            { q: "Что такое допущение в постановке задачи?", a: ["Уточнение некорректной постановки", "Требование", "Оператор", "Предметная область"], c: 0, e: "Допущение — уточнение, если задача поставлена некорректно." },
+            { q: "Что такое математическая модель задачи?", a: ["Формализация условия в математической форме", "Текст задачи", "Блок-схема", "Программа"], c: 0, e: "Математическая модель — формализация условия." },
+            { q: "Что включает математическая модель?", a: ["Исходные, выходные данные и связь", "Только условие", "Только требование", "Только оператор"], c: 0, e: "Модель включает исходные, выходные данные и формулу связи." },
+            { q: "Что такое ТЗ?", a: ["Техническое задание", "Тип задачи", "Таблица значений", "Тест знаний"], c: 0, e: "ТЗ — техническое задание (спецификация)." },
+            { q: "Сколько характеристик включается в таблицу внешней спецификации?", a: ["5", "3", "7", "10"], c: 0, e: "5 характеристик: имя, назначение, тип, ОДЗ, единицы измерения." },
+            { q: "Что такое ОДЗ?", a: ["Область допустимых значений", "Основные данные задачи", "Общий доступ к знаниям", "Оценка данных"], c: 0, e: "ОДЗ — область допустимых значений." },
+            { q: "Что такое тест в программировании?", a: ["Набор исходных данных с известным результатом", "Программа", "Алгоритм", "Блок-схема"], c: 0, e: "Тест — данные с заранее известным результатом." },
+            { q: "Какова цель тестирования?", a: ["Найти как можно больше ошибок", "Доказать отсутствие ошибок", "Ускорить программу", "Уменьшить код"], c: 0, e: "Цель — найти ошибки." },
+            { q: "Кто должен составлять тесты?", a: ["Не автор программы", "Автор программы", "Пользователь", "Компьютер"], c: 0, e: "Тесты составляет независимый человек." },
+            { q: "Когда нужно начинать составлять тесты?", a: ["До написания программы", "После написания", "Во время отладки", "После сдачи"], c: 0, e: "Тесты разрабатываются до алгоритма и программы." },
+            { q: "Что такое регрессионное тестирование?", a: ["Повторное тестирование после изменений", "Первое тестирование", "Тестирование интерфейса", "Тестирование скорости"], c: 0, e: "Регрессионное тестирование — повторное после правок." },
+            { q: "Что такое метод чёрного ящика?", a: ["Тестирование без знания внутреннего устройства", "Тестирование с знанием кода", "Тестирование интерфейса", "Тестирование скорости"], c: 0, e: "Чёрный ящик — без знания внутренней структуры." },
+            { q: "Что такое метод белого ящика?", a: ["Тестирование с знанием внутреннего устройства", "Без знания кода", "Только интерфейс", "Только скорость"], c: 0, e: "Белый ящик — с доступом к коду." },
+            { q: "Что такое покрытие условий?", a: ["Проверка всех комбинаций условий", "Проверка границ", "Проверка ошибок", "Проверка скорости"], c: 0, e: "Покрытие условий — все комбинации условий." },
+            { q: "Что такое граничные случаи?", a: ["Проверка границ допустимых значений", "Проверка всех условий", "Проверка ошибок", "Проверка скорости"], c: 0, e: "Граничные случаи — проверка границ." },
+            { q: "Что такое недопустимые случаи?", a: ["Проверка реакции на некорректные данные", "Проверка границ", "Проверка условий", "Проверка скорости"], c: 0, e: "Недопустимые случаи — проверка ошибок ввода." },
+            { q: "Что такое алгоритм по Ершову?", a: ["Понятное и точное предписание исполнителю", "Программа", "Блок-схема", "Код"], c: 0, e: "Алгоритм — понятное и точное предписание." },
+            { q: "Что такое команда в алгоритме?", a: ["Отдельное указание исполнителю", "Программа", "Блок-схема", "Код"], c: 0, e: "Команда — отдельное указание." },
+            { q: "Что такое оператор в программировании?", a: ["Реализация команды в языке программирования", "Команда", "Алгоритм", "Блок-схема"], c: 0, e: "Оператор — реализация команды в коде." },
+            { q: "Что такое СКИ?", a: ["Система команд исполнителя", "Система кодирования информации", "Схема команд и инструкций", "Стандартный код"], c: 0, e: "СКИ — система команд исполнителя." },
+            { q: "Что такое алгоритмизация?", a: ["Процесс составления алгоритма", "Написание кода", "Тестирование", "Отладка"], c: 0, e: "Алгоритмизация — разработка алгоритма." },
+            { q: "Какое свойство алгоритма означает разбиение на шаги?", a: ["Дискретность", "Понятность", "Детерминированность", "Результативность"], c: 0, e: "Дискретность — разбиение на шаги." },
+            { q: "Какое свойство алгоритма означает понятность команд?", a: ["Понятность", "Дискретность", "Детерминированность", "Результативность"], c: 0, e: "Понятность — команды понятны исполнителю." },
+            { q: "Какое свойство алгоритма означает однозначность?", a: ["Детерминированность", "Дискретность", "Понятность", "Результативность"], c: 0, e: "Детерминированность — однозначность результата." },
+            { q: "Какое свойство алгоритма означает завершение?", a: ["Результативность", "Дискретность", "Понятность", "Детерминированность"], c: 0, e: "Результативность — завершение за конечное число шагов." },
+            { q: "Какое свойство алгоритма является необязательным?", a: ["Массовость", "Дискретность", "Понятность", "Результативность"], c: 0, e: "Массовость — необязательное свойство." },
+            { q: "Сколько обязательных свойств у алгоритма?", a: ["4", "3", "5", "2"], c: 0, e: "4 обязательных свойства: дискретность, понятность, детерминированность, результативность." },
+            { q: "Что такое блок-схема?", a: ["Графическое представление алгоритма", "Текст программы", "Таблица", "Диаграмма"], c: 0, e: "Блок-схема — графическое представление алгоритма." },
+            { q: "Какая фигура обозначает начало/конец?", a: ["Овал", "Прямоугольник", "Ромб", "Параллелограмм"], c: 0, e: "Овал (терминатор) — начало/конец." },
+            { q: "Какая фигура обозначает ввод/вывод?", a: ["Параллелограмм", "Овал", "Ромб", "Прямоугольник"], c: 0, e: "Параллелограмм — ввод/вывод." },
+            { q: "Какая фигура обозначает процесс?", a: ["Прямоугольник", "Овал", "Ромб", "Параллелограмм"], c: 0, e: "Прямоугольник — процесс (вычисление)." },
+            { q: "Какая фигура обозначает условие?", a: ["Ромб", "Овал", "Прямоугольник", "Параллелограмм"], c: 0, e: "Ромб — условие (решение)." },
+            { q: "Какая фигура обозначает цикл с параметром?", a: ["Шестиугольник", "Овал", "Ромб", "Прямоугольник"], c: 0, e: "Шестиугольник — модификация (цикл с параметром)." },
+            { q: "Какая фигура обозначает вызов подпрограммы?", a: ["Прямоугольник с двойными линиями", "Овал", "Ромб", "Параллелограмм"], c: 0, e: "Прямоугольник с двойными линиями — предопределённый процесс." },
+            { q: "Что такое линия потока?", a: ["Стрелка, показывающая порядок", "Граница блока", "Комментарий", "Соединитель"], c: 0, e: "Линия потока — стрелка, показывающая порядок." },
+            { q: "Что такое соединитель?", a: ["Кружок для разрыва линий", "Овал", "Ромб", "Прямоугольник"], c: 0, e: "Соединитель — кружок для разрыва линий." },
+            { q: "Что такое комментарий в блок-схеме?", a: ["Поясняющий текст", "Блок процесса", "Условие", "Ввод"], c: 0, e: "Комментарий — поясняющий текст." },
+            { q: "Что такое следование?", a: ["Последовательное выполнение блоков", "Ветвление", "Цикл", "Условие"], c: 0, e: "Следование — последовательное выполнение." },
+            { q: "Что такое ветвление?", a: ["Выбор одного из двух путей", "Повторение", "Последовательность", "Ожидание"], c: 0, e: "Ветвление — выбор пути по условию." },
+            { q: "Что такое цикл?", a: ["Многократное выполнение блока", "Однократное выполнение", "Ветвление", "Ожидание"], c: 0, e: "Цикл — многократное выполнение." },
+            { q: "Что такое цикл с предусловием?", a: ["Проверка условия до тела цикла", "Проверка после тела", "Без проверки", "С параметром"], c: 0, e: "Цикл с предусловием — проверка до тела." },
+            { q: "Что такое цикл с постусловием?", a: ["Проверка условия после тела цикла", "Проверка до тела", "Без проверки", "С параметром"], c: 0, e: "Цикл с постусловием — проверка после тела." },
+            { q: "Что такое цикл с параметром?", a: ["Известное число итераций", "Неизвестное число", "Без условия", "С предусловием"], c: 0, e: "Цикл с параметром — известное число итераций." },
+            { q: "Что такое итерация?", a: ["Однократное выполнение тела цикла", "Ветвление", "Условие", "Программа"], c: 0, e: "Итерация — однократное выполнение тела цикла." },
+            { q: "Что такое тело цикла?", a: ["Блок команд, повторяющихся в цикле", "Условие цикла", "Параметр цикла", "Счетчик"], c: 0, e: "Тело цикла — повторяющиеся команды." },
+            { q: "Что такое счетчик в цикле?", a: ["Переменная для подсчета итераций", "Условие", "Тело цикла", "Параметр"], c: 0, e: "Счетчик — переменная для подсчета итераций." },
+            { q: "Что такое вложенный цикл?", a: ["Цикл внутри другого цикла", "Два отдельных цикла", "Цикл с условием", "Цикл без тела"], c: 0, e: "Вложенный цикл — цикл внутри другого." },
+            { q: "Что такое бесконечный цикл?", a: ["Цикл, который никогда не завершается", "Цикл с ошибкой", "Цикл с параметром", "Цикл с постусловием"], c: 0, e: "Бесконечный цикл — условие всегда истинно." },
+            { q: "Какой оператор используется для выхода из цикла в C++?", a: ["break", "continue", "return", "exit"], c: 0, e: "break прерывает выполнение цикла." },
+            { q: "Какой оператор пропускает текущую итерацию в C++?", a: ["continue", "break", "return", "goto"], c: 0, e: "continue переходит к следующей итерации." },
+            { q: "Что такое линейный алгоритм?", a: ["Команды выполняются последовательно", "Содержит условие", "Содержит цикл", "Содержит ветвление"], c: 0, e: "Линейный алгоритм — только последовательные команды." },
+            { q: "Что такое разветвляющийся алгоритм?", a: ["Содержит условие выбора", "Только последовательность", "Только циклы", "Без условий"], c: 0, e: "Разветвляющийся алгоритм содержит условие." },
+            { q: "Что такое циклический алгоритм?", a: ["Содержит повторяющиеся действия", "Только линейный", "Только с условием", "Без повторений"], c: 0, e: "Циклический алгоритм содержит повторения." },
+            { q: "Что такое трассировка алгоритма?", a: ["Пошаговое выполнение с отслеживанием значений", "Запись алгоритма", "Оптимизация", "Отладка"], c: 0, e: "Трассировка — пошаговое выполнение." },
+            { q: "Что такое псевдокод?", a: ["Запись алгоритма на условном языке", "Код на C++", "Блок-схема", "Текст программы"], c: 0, e: "Псевдокод — запись на условном языке." },
+            { q: "Что такое рекурсия?", a: ["Вызов функцией самой себя", "Цикл", "Ветвление", "Массив"], c: 0, e: "Рекурсия — вызов функцией самой себя." },
+            { q: "Что такое базовый случай в рекурсии?", a: ["Условие выхода из рекурсии", "Начало рекурсии", "Конец программы", "Ошибка"], c: 0, e: "Базовый случай останавливает рекурсию." },
+            { q: "Что такое массив?", a: ["Набор однотипных элементов", "Переменная", "Функция", "Цикл"], c: 0, e: "Массив — набор однотипных элементов." },
+            { q: "Что такое индекс массива?", a: ["Номер элемента в массиве", "Значение элемента", "Размер массива", "Тип массива"], c: 0, e: "Индекс — номер элемента." },
+            { q: "Что такое сортировка?", a: ["Упорядочивание элементов", "Поиск", "Удаление", "Вставка"], c: 0, e: "Сортировка — упорядочивание элементов." },
+            { q: "Что такое поиск в массиве?", a: ["Нахождение элемента по значению", "Сортировка", "Удаление", "Вставка"], c: 0, e: "Поиск — нахождение элемента." },
+            { q: "Какой алгоритм сортировки самый простой?", a: ["Пузырьковая сортировка", "Быстрая сортировка", "Сортировка слиянием", "Пирамидальная"], c: 0, e: "Пузырьковая сортировка — простой алгоритм." },
+            { q: "Что такое бинарный поиск?", a: ["Поиск в отсортированном массиве делением пополам", "Линейный поиск", "Поиск по индексу", "Поиск в глубину"], c: 0, e: "Бинарный поиск — деление пополам." },
+            { q: "Что такое подпрограмма?", a: ["Вспомогательный алгоритм", "Основная программа", "Цикл", "Ветвление"], c: 0, e: "Подпрограмма — вспомогательный алгоритм." },
+            { q: "Что такое функция в программировании?", a: ["Подпрограмма, возвращающая значение", "Переменная", "Цикл", "Массив"], c: 0, e: "Функция — подпрограмма, возвращающая значение." },
+            { q: "Что такое параметр функции?", a: ["Входное значение для функции", "Результат", "Имя функции", "Тело функции"], c: 0, e: "Параметр — входное значение." },
+            { q: "Что такое аргумент функции?", a: ["Значение, передаваемое при вызове", "Параметр", "Результат", "Имя"], c: 0, e: "Аргумент — значение при вызове." },
+            { q: "Что такое возвращаемое значение?", a: ["Результат работы функции", "Параметр", "Аргумент", "Имя"], c: 0, e: "Возвращаемое значение — результат функции." },
+            { q: "Что такое область видимости переменной?", a: ["Часть программы, где доступна переменная", "Тип переменной", "Значение", "Имя"], c: 0, e: "Область видимости — где доступна переменная." },
+            { q: "Что такое глобальная переменная?", a: ["Доступна во всей программе", "Только в функции", "Только в цикле", "Только в блоке"], c: 0, e: "Глобальная — доступна везде." },
+            { q: "Что такое локальная переменная?", a: ["Доступна только в блоке/функции", "Во всей программе", "Только в цикле", "Только в условии"], c: 0, e: "Локальная — доступна в блоке." },
+            { q: "Что такое тип возвращаемого значения функции?", a: ["Тип результата функции", "Тип параметра", "Тип аргумента", "Тип переменной"], c: 0, e: "Тип возвращаемого значения — тип результата." },
+            { q: "Что такое прототип функции?", a: ["Объявление функции до её определения", "Тело функции", "Вызов функции", "Параметр"], c: 0, e: "Прототип — объявление функции." },
+            { q: "Что такое перегрузка функции?", a: ["Несколько функций с одним именем", "Одна функция", "Ошибка", "Рекурсия"], c: 0, e: "Перегрузка — несколько функций с одним именем." },
+            { q: "Что такое шаблон функции?", a: ["Обобщенная функция для разных типов", "Обычная функция", "Ошибка", "Рекурсия"], c: 0, e: "Шаблон — обобщенная функция." },
+            { q: "Что такое структура в C++?", a: ["Структурированный тип данных", "Массив", "Функция", "Цикл"], c: 0, e: "Структура — структурированный тип." },
+            { q: "Что такое класс в C++?", a: ["Структура с методами", "Массив", "Функция", "Цикл"], c: 0, e: "Класс — структура с методами." },
+            { q: "Что такое объект в C++?", a: ["Экземпляр класса", "Класс", "Структура", "Функция"], c: 0, e: "Объект — экземпляр класса." },
+            { q: "Что такое инкапсуляция?", a: ["Скрытие внутренней реализации", "Наследование", "Полиморфизм", "Абстракция"], c: 0, e: "Инкапсуляция — скрытие реализации." },
+            { q: "Что такое наследование?", a: ["Создание класса на основе другого", "Скрытие", "Полиморфизм", "Абстракция"], c: 0, e: "Наследование — создание на основе другого." },
+            { q: "Что такое полиморфизм?", a: ["Одинаковый интерфейс для разных типов", "Скрытие", "Наследование", "Абстракция"], c: 0, e: "Полиморфизм — одинаковый интерфейс." },
+            { q: "Что такое абстракция?", a: ["Выделение существенных свойств", "Скрытие", "Наследование", "Полиморфизм"], c: 0, e: "Абстракция — выделение существенного." },
+            { q: "Что такое конструктор?", a: ["Метод инициализации объекта", "Деструктор", "Функция", "Переменная"], c: 0, e: "Конструктор — инициализация объекта." },
+            { q: "Что такое деструктор?", a: ["Метод очистки объекта", "Конструктор", "Функция", "Переменная"], c: 0, e: "Деструктор — очистка объекта." },
+            { q: "Что такое указатель?", a: ["Переменная для хранения адреса", "Значение", "Тип", "Функция"], c: 0, e: "Указатель — хранит адрес." },
+            { q: "Что такое ссылка?", a: ["Псевдоним переменной", "Указатель", "Значение", "Тип"], c: 0, e: "Ссылка — псевдоним переменной." },
+            { q: "Что такое динамическая память?", a: ["Память, выделяемая во время работы", "Статическая память", "Кэш", "Регистры"], c: 0, e: "Динамическая память — выделяется во время работы." },
+            { q: "Что такое оператор new в C++?", a: ["Выделение динамической памяти", "Освобождение памяти", "Присваивание", "Сравнение"], c: 0, e: "new — выделение памяти." },
+            { q: "Что такое оператор delete в C++?", a: ["Освобождение динамической памяти", "Выделение памяти", "Присваивание", "Сравнение"], c: 0, e: "delete — освобождение памяти." },
+            { q: "Что такое исключение в C++?", a: ["Обработка ошибок", "Ошибка", "Цикл", "Функция"], c: 0, e: "Исключение — обработка ошибок." },
+            { q: "Что такое try-catch?", a: ["Блок обработки исключений", "Цикл", "Функция", "Условие"], c: 0, e: "try-catch — обработка исключений." },
+            { q: "Что такое поток в C++?", a: ["Абстракция для ввода/вывода", "Процесс", "Функция", "Переменная"], c: 0, e: "Поток — абстракция ввода/вывода." },
+            { q: "Что такое namespace в C++?", a: ["Пространство имен", "Класс", "Структура", "Функция"], c: 0, e: "namespace — пространство имен." },
+            { q: "Что такое шаблон в C++?", a: ["Обобщенный код для разных типов", "Функция", "Класс", "Переменная"], c: 0, e: "Шаблон — обобщенный код." },
+            { q: "Что такое STL в C++?", a: ["Стандартная библиотека шаблонов", "Система типов", "Среда разработки", "Компилятор"], c: 0, e: "STL — стандартная библиотека шаблонов." },
+            { q: "Что такое вектор в STL?", a: ["Динамический массив", "Список", "Стек", "Очередь"], c: 0, e: "vector — динамический массив." },
+            { q: "Что такое список в STL?", a: ["Двусвязный список", "Массив", "Стек", "Очередь"], c: 0, e: "list — двусвязный список." },
+            { q: "Что такое стек в STL?", a: ["Структура LIFO", "Очередь", "Массив", "Список"], c: 0, e: "stack — LIFO." },
+            { q: "Что такое очередь в STL?", a: ["Структура FIFO", "Стек", "Массив", "Список"], c: 0, e: "queue — FIFO." },
+            { q: "Что такое множество в STL?", a: ["Уникальные элементы", "Массив", "Список", "Очередь"], c: 0, e: "set — уникальные элементы." },
+            { q: "Что такое карта в STL?", a: ["Пары ключ-значение", "Массив", "Список", "Очередь"], c: 0, e: "map — пары ключ-значение." },
+            { q: "Что такое алгоритм в STL?", a: ["Функции для обработки контейнеров", "Контейнер", "Итератор", "Функтор"], c: 0, e: "Алгоритмы STL — функции для контейнеров." },
+            { q: "Что такое итератор в STL?", a: ["Обобщенный указатель", "Указатель", "Ссылка", "Массив"], c: 0, e: "Итератор — обобщенный указатель." },
+            { q: "Что такое лямбда-выражение в C++?", a: ["Анонимная функция", "Класс", "Структура", "Переменная"], c: 0, e: "Лямбда — анонимная функция." },
+            { q: "Что такое умный указатель в C++?", a: ["Указатель с автоматическим управлением памятью", "Обычный указатель", "Ссылка", "Массив"], c: 0, e: "Умный указатель — автоматическое управление памятью." },
+            { q: "Что такое RAII в C++?", a: ["Управление ресурсами через конструкторы/деструкторы", "Тип данных", "Функция", "Класс"], c: 0, e: "RAII — управление ресурсами через конструкторы/деструкторы." },
+            { q: "Что такое перемещение (move) в C++?", a: ["Передача ресурсов без копирования", "Копирование", "Удаление", "Создание"], c: 0, e: "move — передача ресурсов без копирования." },
+            { q: "Что такое ссылка rvalue в C++?", a: ["Ссылка на временный объект", "Ссылка на константу", "Обычная ссылка", "Указатель"], c: 0, e: "rvalue ссылка — на временный объект." },
+            { q: "Что такое константный метод в C++?", a: ["Метод, не изменяющий объект", "Метод, изменяющий объект", "Статический метод", "Виртуальный метод"], c: 0, e: "Константный метод не изменяет объект." },
+            { q: "Что такое виртуальная функция в C++?", a: ["Функция с поздним связыванием", "Обычная функция", "Статическая функция", "Константная функция"], c: 0, e: "Виртуальная функция — позднее связывание." },
+            { q: "Что такое чисто виртуальная функция в C++?", a: ["Функция без реализации", "Обычная функция", "Статическая функция", "Константная функция"], c: 0, e: "Чисто виртуальная — без реализации." },
+            { q: "Что такое абстрактный класс в C++?", a: ["Класс с чисто виртуальной функцией", "Обычный класс", "Структура", "Интерфейс"], c: 0, e: "Абстрактный класс — с чисто виртуальной функцией." },
+            { q: "Что такое интерфейс в C++?", a: ["Абстрактный класс с только чисто виртуальными функциями", "Обычный класс", "Структура", "Функция"], c: 0, e: "Интерфейс — абстрактный класс с чисто виртуальными функциями." },
+            { q: "Что такое множественное наследование в C++?", a: ["Наследование от нескольких классов", "Наследование от одного", "Без наследования", "Интерфейс"], c: 0, e: "Множественное наследование — от нескольких классов." },
+            { q: "Что такое виртуальное наследование в C++?", a: ["Решение проблемы ромба", "Обычное наследование", "Множественное наследование", "Интерфейс"], c: 0, e: "Виртуальное наследование — решение проблемы ромба." },
+            { q: "Что такое полиморфизм времени выполнения?", a: ["Виртуальные функции", "Шаблоны", "Перегрузка", "Наследование"], c: 0, e: "Полиморфизм времени выполнения — виртуальные функции." },
+            { q: "Что такое полиморфизм времени компиляции?", a: ["Шаблоны и перегрузка", "Виртуальные функции", "Наследование", "Инкапсуляция"], c: 0, e: "Полиморфизм времени компиляции — шаблоны и перегрузка." },
+            { q: "Что такое потокобезопасность?", a: ["Корректная работа при многопоточности", "Однопоточность", "Безопасность данных", "Шифрование"], c: 0, e: "Потокобезопасность — корректная работа при многопоточности." },
+            { q: "Что такое мьютекс?", a: ["Примитив синхронизации", "Поток", "Процесс", "Функция"], c: 0, e: "Мьютекс — примитив синхронизации." },
+            { q: "Что такое семафор?", a: ["Примитив синхронизации", "Поток", "Процесс", "Функция"], c: 0, e: "Семафор — примитив синхронизации." },
+            { q: "Что такое состояние гонки?", a: ["Ошибка при многопоточности", "Ошибка компиляции", "Ошибка логики", "Ошибка ввода"], c: 0, e: "Состояние гонки — ошибка при многопоточности." },
+            { q: "Что такое взаимная блокировка (deadlock)?", a: ["Бесконечное ожидание ресурсов", "Ошибка компиляции", "Ошибка логики", "Ошибка ввода"], c: 0, e: "Взаимная блокировка — бесконечное ожидание." },
+            { q: "Что такое атомарная операция?", a: ["Неделимая операция", "Сложная операция", "Операция ввода", "Операция вывода"], c: 0, e: "Атомарная операция — неделимая." },
+            { q: "Что такое барьер в многопоточности?", a: ["Точка синхронизации потоков", "Ошибка", "Функция", "Класс"], c: 0, e: "Барьер — точка синхронизации потоков." },
+            { q: "Что такое пул потоков?", a: ["Набор потоков для выполнения задач", "Один поток", "Процесс", "Функция"], c: 0, e: "Пул потоков — набор потоков для задач." },
+            { q: "Что такое асинхронность?", a: ["Выполнение без блокировки", "Блокировка", "Ожидание", "Синхронность"], c: 0, e: "Асинхронность — выполнение без блокировки." },
+            { q: "Что такое future в C++?", a: ["Объект для получения результата асинхронной операции", "Поток", "Процесс", "Функция"], c: 0, e: "future — объект для результата асинхронной операции." },
+            { q: "Что такое promise в C++?", a: ["Объект для установки результата", "Поток", "Процесс", "Функция"], c: 0, e: "promise — объект для установки результата." },
+            { q: "Что такое async в C++?", a: ["Запуск асинхронной задачи", "Ожидание", "Блокировка", "Синхронность"], c: 0, e: "async — запуск асинхронной задачи." },
+            { q: "Что такое многопоточность?", a: ["Одновременное выполнение нескольких потоков", "Один поток", "Процесс", "Функция"], c: 0, e: "Многопоточность — одновременное выполнение потоков." },
+            { q: "Что такое процесс?", a: ["Экземпляр программы", "Поток", "Функция", "Класс"], c: 0, e: "Процесс — экземпляр программы." },
+            { q: "Что такое поток?", a: ["Единица выполнения внутри процесса", "Процесс", "Функция", "Класс"], c: 0, e: "Поток — единица выполнения внутри процесса." },
+            { q: "Что такое контекст потока?", a: ["Состояние потока", "Процесс", "Функция", "Класс"], c: 0, e: "Контекст потока — состояние потока." },
+            { q: "Что такое переключение контекста?", a: ["Смена выполняемого потока", "Запуск потока", "Остановка потока", "Создание потока"], c: 0, e: "Переключение контекста — смена выполняемого потока." },
+            { q: "Что такое планировщик?", a: ["Компонент ОС для распределения процессора", "Поток", "Процесс", "Функция"], c: 0, e: "Планировщик — распределяет процессор." },
+            { q: "Что такое квант времени?", a: ["Время выполнения потока", "Время ожидания", "Время создания", "Время удаления"], c: 0, e: "Квант времени — время выполнения потока." },
+            { q: "Что такое приоритет потока?", a: ["Важность потока", "Время выполнения", "Время ожидания", "Время создания"], c: 0, e: "Приоритет — важность потока." },
+            { q: "Что такое голодание потока?", a: ["Долгое ожидание процессора", "Быстрое выполнение", "Остановка", "Создание"], c: 0, e: "Голодание — долгое ожидание процессора." },
+            { q: "Что такое инверсия приоритетов?", a: ["Низкоприоритетный поток блокирует высокоприоритетный", "Высокоприоритетный блокирует низкоприоритетный", "Равные приоритеты", "Нет приоритетов"], c: 0, e: "Инверсия приоритетов — низкоприоритетный блокирует высокоприоритетный." },
+            { q: "Что такое спин-блокировка?", a: ["Активное ожидание", "Пассивное ожидание", "Сон", "Остановка"], c: 0, e: "Спин-блокировка — активное ожидание." },
+            { q: "Что такое условная переменная?", a: ["Примитив синхронизации для ожидания условия", "Обычная переменная", "Функция", "Класс"], c: 0, e: "Условная переменная — ожидание условия." },
+            { q: "Что такое монитор?", a: ["Примитив синхронизации высокого уровня", "Поток", "Процесс", "Функция"], c: 0, e: "Монитор — примитив синхронизации высокого уровня." },
+            { q: "Что такое блокировка чтения-записи?", a: ["Позволяет множественное чтение или одну запись", "Только чтение", "Только запись", "Без блокировки"], c: 0, e: "Блокировка чтения-записи — множественное чтение или одна запись." },
+            { q: "Что такое атомарный тип в C++?", a: ["Тип с атомарными операциями", "Обычный тип", "Структура", "Класс"], c: 0, e: "Атомарный тип — с атомарными операциями." },
+            { q: "Что такое memory_order в C++?", a: ["Модель памяти для атомарных операций", "Тип данных", "Функция", "Класс"], c: 0, e: "memory_order — модель памяти для атомарных операций." },
+            { q: "Что такое volatile в C++?", a: ["Указывает, что переменная может изменяться извне", "Константа", "Ссылка", "Указатель"], c: 0, e: "volatile — переменная может изменяться извне." },
+            { q: "Что такое constexpr в C++?", a: ["Вычисление на этапе компиляции", "Константа времени выполнения", "Переменная", "Функция"], c: 0, e: "constexpr — вычисление на этапе компиляции." },
+            { q: "Что такое const в C++?", a: ["Константа", "Переменная", "Функция", "Класс"], c: 0, e: "const — константа." },
+            { q: "Что такое static в C++?", a: ["Статическая переменная/функция", "Динамическая", "Локальная", "Глобальная"], c: 0, e: "static — статическая переменная/функция." },
+            { q: "Что такое extern в C++?", a: ["Внешняя переменная/функция", "Внутренняя", "Локальная", "Глобальная"], c: 0, e: "extern — внешняя переменная/функция." },
+            { q: "Что такое inline в C++?", a: ["Встраиваемая функция", "Обычная функция", "Статическая", "Виртуальная"], c: 0, e: "inline — встраиваемая функция." },
+            { q: "Что такое friend в C++?", a: ["Дружественная функция/класс", "Обычная функция", "Статическая", "Виртуальная"], c: 0, e: "friend — дружественная функция/класс." },
+            { q: "Что такое operator в C++?", a: ["Перегрузка оператора", "Функция", "Класс", "Переменная"], c: 0, e: "operator — перегрузка оператора." },
+            { q: "Что такое this в C++?", a: ["Указатель на текущий объект", "Ссылка", "Переменная", "Функция"], c: 0, e: "this — указатель на текущий объект." },
+            { q: "Что такое namespace в C++?", a: ["Пространство имен", "Класс", "Структура", "Функция"], c: 0, e: "namespace — пространство имен." },
+            { q: "Что такое using в C++?", a: ["Директива для использования пространства имен", "Класс", "Структура", "Функция"], c: 0, e: "using — директива для использования пространства имен." },
+            { q: "Что такое auto в C++?", a: ["Автоматическое определение типа", "Тип данных", "Функция", "Класс"], c: 0, e: "auto — автоматическое определение типа." },
+            { q: "Что такое decltype в C++?", a: ["Определение типа выражения", "Тип данных", "Функция", "Класс"], c: 0, e: "decltype — определение типа выражения." },
+            { q: "Что такое nullptr в C++?", a: ["Нулевой указатель", "Указатель", "Ссылка", "Переменная"], c: 0, e: "nullptr — нулевой указатель." },
+            { q: "Что такое NULL в C++?", a: ["Нулевой указатель (макрос)", "Указатель", "Ссылка", "Переменная"], c: 0, e: "NULL — нулевой указатель (макрос)." },
+            { q: "Что такое void в C++?", a: ["Отсутствие типа", "Тип данных", "Функция", "Класс"], c: 0, e: "void — отсутствие типа." },
+            { q: "Что такое bool в C++?", a: ["Логический тип", "Целый тип", "Вещественный тип", "Символьный тип"], c: 0, e: "bool — логический тип." },
+            { q: "Что такое char в C++?", a: ["Символьный тип", "Целый тип", "Вещественный тип", "Логический тип"], c: 0, e: "char — символьный тип." },
+            { q: "Что такое int в C++?", a: ["Целый тип", "Вещественный тип", "Символьный тип", "Логический тип"], c: 0, e: "int — целый тип." },
+            { q: "Что такое float в C++?", a: ["Вещественный тип (одинарная точность)", "Целый тип", "Символьный тип", "Логический тип"], c: 0, e: "float — вещественный тип (одинарная точность)." },
+            { q: "Что такое double в C++?", a: ["Вещественный тип (двойная точность)", "Целый тип", "Символьный тип", "Логический тип"], c: 0, e: "double — вещественный тип (двойная точность)." },
+            { q: "Что такое long в C++?", a: ["Длинный целый тип", "Вещественный тип", "Символьный тип", "Логический тип"], c: 0, e: "long — длинный целый тип." },
+            { q: "Что такое short в C++?", a: ["Короткий целый тип", "Вещественный тип", "Символьный тип", "Логический тип"], c: 0, e: "short — короткий целый тип." },
+            { q: "Что такое unsigned в C++?", a: ["Беззнаковый тип", "Знаковый тип", "Вещественный тип", "Символьный тип"], c: 0, e: "unsigned — беззнаковый тип." },
+            { q: "Что такое signed в C++?", a: ["Знаковый тип", "Беззнаковый тип", "Вещественный тип", "Символьный тип"], c: 0, e: "signed — знаковый тип." }
+        ];
+
+        // ===== DATA: EVM QUESTIONS =====
+        const evmQuestions = [
+            { q: "Что такое данные согласно конспекту?", a: ["Зарегистрированные сигналы", "Обработанная информация", "Программа", "Алгоритм"], c: 0, e: "Данные — это зарегистрированные сигналы." },
+            { q: "Что такое информация согласно конспекту?", a: ["Результат слияния данных и адекватных им методов", "Зарегистрированные сигналы", "Программа", "Алгоритм"], c: 0, e: "Информация — результат слияния данных и адекватных им методов." },
+            { q: "Что изучает научное направление «ЭВМ и информатика»?", a: ["Информационные процессы и их автоматизацию", "Только программы", "Только железо", "Только сети"], c: 0, e: "Изучает информационные процессы и возможность их автоматизации." },
+            { q: "Какой ученый внес вклад в науку об ЭВМ?", a: ["Лейбниц", "Ньютон", "Эйнштейн", "Дарвин"], c: 0, e: "Лейбниц — один из ученых, внесших вклад." },
+            { q: "Как понимается информация в физике?", a: ["Мера упорядоченности, антиэнтропии", "Совокупность символов", "Знания об объектах", "Каналы связи"], c: 0, e: "В физике — мера упорядоченности (антиэнтропии)." },
+            { q: "Как понимается информация в кибернетике?", a: ["Всё, что задействовано в каналах связи", "Мера хаоса", "Совокупность символов", "Знания"], c: 0, e: "В кибернетике — всё, что задействовано в каналах связи при управлении." },
+            { q: "Как понимается информация в математике?", a: ["Совокупность символов алфавита или кодовой таблицы", "Мера порядка", "Каналы связи", "Знания"], c: 0, e: "В математике — совокупность символов алфавита или кодовой таблицы." },
+            { q: "Какое свойство информации означает её независимость от мнения?", a: ["Объективность", "Полнота", "Достоверность", "Адекватность"], c: 0, e: "Объективность — независимость от мнения." },
+            { q: "Какое свойство информации означает достаточность для решения?", a: ["Полнота", "Объективность", "Достоверность", "Доступность"], c: 0, e: "Полнота — достаточность для решения." },
+            { q: "Какое свойство информации означает соответствие истине?", a: ["Достоверность", "Полнота", "Объективность", "Актуальность"], c: 0, e: "Достоверность — соответствие истине." },
+            { q: "Какое свойство информации означает соответствие реальности?", a: ["Адекватность", "Достоверность", "Полнота", "Доступность"], c: 0, e: "Адекватность — соответствие реальности." },
+            { q: "Какое свойство информации означает возможность получения?", a: ["Доступность", "Актуальность", "Полнота", "Объективность"], c: 0, e: "Доступность — возможность получения." },
+            { q: "Какое свойство информации означает соответствие текущему моменту?", a: ["Актуальность", "Доступность", "Полнота", "Достоверность"], c: 0, e: "Актуальность — соответствие текущему моменту." },
+            { q: "Что относится к информационным процессам?", a: ["Сбор, передача, хранение, обработка", "Только хранение", "Только передача", "Только обработка"], c: 0, e: "Информационные процессы: сбор, передача, хранение, обработка, защита, представление." },
+            { q: "Что такое источник информации?", a: ["Элемент окружающего мира, передающий сведения", "Приемник", "Канал связи", "Носитель"], c: 0, e: "Источник — элемент, передающий сведения." },
+            { q: "Что такое потребитель информации?", a: ["Субъект, получающий и использующий данные", "Источник", "Канал связи", "Носитель"], c: 0, e: "Потребитель — субъект, получающий данные." },
+            { q: "Что такое ЭВМ?", a: ["Устройство для автоматической обработки информации", "Программа", "Алгоритм", "Данные"], c: 0, e: "ЭВМ — устройство для автоматической обработки информации." },
+            { q: "Что такое процессор (CPU)?", a: ["Центральное устройство, управляющее процессами и обрабатывающее данные", "Память", "Устройство ввода", "Устройство вывода"], c: 0, e: "CPU — центральное устройство обработки." },
+            { q: "Что входит в состав процессора?", a: ["АЛУ, УУ, регистры, кэш", "ОЗУ, ПЗУ", "HDD, SSD", "Монитор, клавиатура"], c: 0, e: "Процессор включает АЛУ, УУ, регистры и кэш." },
+            { q: "Что такое АЛУ?", a: ["Арифметико-логическое устройство", "Алгоритмическое логическое устройство", "Аппаратное логическое устройство", "Аналоговое логическое устройство"], c: 0, e: "АЛУ — арифметико-логическое устройство." },
+            { q: "Что такое УУ?", a: ["Устройство управления", "Устройство ввода", "Устройство вывода", "Устройство хранения"], c: 0, e: "УУ — устройство управления." },
+            { q: "Что такое регистры процессора?", a: ["Сверхбыстрая внутренняя память", "Внешняя память", "ОЗУ", "ПЗУ"], c: 0, e: "Регистры — сверхбыстрая внутренняя память." },
+            { q: "Что такое кэш-память?", a: ["Сверхбыстрая память для часто используемых данных", "Основная память", "Внешняя память", "ПЗУ"], c: 0, e: "Кэш — сверхбыстрая память для часто используемых данных." },
+            { q: "Какие уровни кэш-памяти существуют?", a: ["L1, L2, L3", "L0, L1, L2", "L1, L2", "L1, L2, L3, L4"], c: 0, e: "Уровни кэша: L1, L2, L3." },
+            { q: "Что такое ОЗУ (RAM)?", a: ["Оперативная энергозависимая память", "Постоянная память", "Внешняя память", "Кэш"], c: 0, e: "ОЗУ — оперативная энергозависимая память." },
+            { q: "Что такое ПЗУ (ROM)?", a: ["Постоянная энергонезависимая память", "Оперативная память", "Внешняя память", "Кэш"], c: 0, e: "ПЗУ — постоянная энергонезависимая память." },
+            { q: "Что хранится в ПЗУ?", a: ["BIOS/UEFI и POST-тесты", "Текущие программы", "Файлы пользователя", "Кэш"], c: 0, e: "В ПЗУ хранятся BIOS/UEFI и POST-тесты." },
+            { q: "Что такое ВЗУ?", a: ["Внешнее запоминающее устройство", "Внутреннее запоминающее устройство", "Оперативная память", "Кэш"], c: 0, e: "ВЗУ — внешнее запоминающее устройство." },
+            { q: "Что относится к внешней памяти?", a: ["HDD, SSD, флеш-накопители", "ОЗУ", "ПЗУ", "Регистры"], c: 0, e: "Внешняя память: HDD, SSD, флеш, оптические диски." },
+            { q: "Что такое HDD?", a: ["Накопитель на жестких магнитных дисках", "Твердотельный накопитель", "Оперативная память", "Кэш"], c: 0, e: "HDD — Hard Disk Drive." },
+            { q: "Что такое SSD?", a: ["Твердотельный накопитель", "Жесткий диск", "Оперативная память", "Кэш"], c: 0, e: "SSD — Solid-State Drive." },
+            { q: "Что такое BIOS?", a: ["Базовая система ввода-вывода", "Операционная система", "Программа для игр", "Антивирус"], c: 0, e: "BIOS — Basic Input/Output System." },
+            { q: "Что такое CPU?", a: ["Центральный процессор", "Память", "Устройство ввода", "Устройство вывода"], c: 0, e: "CPU — Central Processing Unit." },
+            { q: "Что относится к периферийным устройствам ввода?", a: ["Клавиатура, мышь, сканер", "Монитор, принтер", "HDD, SSD", "Процессор, ОЗУ"], c: 0, e: "Устройства ввода: клавиатура, мышь, сканер, веб-камера, микрофон." },
+            { q: "Что относится к периферийным устройствам вывода?", a: ["Монитор, принтер, плоттер", "Клавиатура, мышь", "HDD, SSD", "Процессор, ОЗУ"], c: 0, e: "Устройства вывода: монитор, принтер, плоттер, акустика, проектор." },
+            { q: "Что относится к системному блоку?", a: ["Материнская плата, корпус, блок питания", "Монитор, клавиатура", "HDD, SSD", "Принтер, сканер"], c: 0, e: "Системный блок: материнская плата, корпус, блок питания, охлаждение." },
+            { q: "Что такое материнская плата?", a: ["Основная плата, объединяющая компоненты", "Процессор", "Память", "Корпус"], c: 0, e: "Материнская плата — основная плата." },
+            { q: "Что такое системная шина?", a: ["Канал связи между устройствами", "Память", "Процессор", "Порт"], c: 0, e: "Системная шина — канал связи." },
+            { q: "Что такое системное ПО?", a: ["Программы для обеспечения работоспособности ЭВМ", "Программы для пользователя", "Средства разработки", "Игры"], c: 0, e: "Системное ПО — для работоспособности ЭВМ." },
+            { q: "Что относится к системному ПО?", a: ["ОС, оболочки, утилиты, драйверы", "Текстовые редакторы", "СУБД", "Компиляторы"], c: 0, e: "Системное ПО: ОС, оболочки, утилиты, драйверы." },
+            { q: "Что такое прикладное ПО?", a: ["Программы для решения задач пользователя", "ОС", "Драйверы", "Компиляторы"], c: 0, e: "Прикладное ПО — для задач пользователя." },
+            { q: "Что относится к прикладному ПО общего назначения?", a: ["Текстовые редакторы, браузеры", "САПР", "Бухгалтерия", "Медицина"], c: 0, e: "Общее назначение: редакторы, браузеры." },
+            { q: "Что относится к прикладному ПО специального назначения?", a: ["САПР, бухгалтерия, медицина", "Браузеры", "Игры", "Текстовые редакторы"], c: 0, e: "Специальное: САПР, бухгалтерия, медицина." },
+            { q: "Что такое инструментальные системы?", a: ["Системы программирования", "ОС", "Утилиты", "Игры"], c: 0, e: "Инструментальные системы — системы программирования." },
+            { q: "Что относится к инструментальным системам?", a: ["Компиляторы, отладчики, IDE", "ОС", "Утилиты", "Браузеры"], c: 0, e: "Инструментальные: компиляторы, отладчики, IDE." },
+            { q: "Что такое файл?", a: ["Поименованная совокупность данных на носителе", "Программа", "Папка", "Драйвер"], c: 0, e: "Файл — поименованная совокупность данных." },
+            { q: "Из чего состоит имя файла?", a: ["Имя и расширение", "Только имя", "Только расширение", "Путь"], c: 0, e: "Имя файла = имя + расширение." },
+            { q: "Какая файловая система используется в Windows?", a: ["NTFS", "ext3", "ext4", "FAT32"], c: 0, e: "NTFS — основная для Windows." },
+            { q: "Какая файловая система используется в Linux (современный стандарт)?", a: ["ext4", "NTFS", "FAT32", "ext3"], c: 0, e: "ext4 — современный стандарт Linux." },
+            { q: "Что является главной структурой NTFS?", a: ["MFT (Главная файловая таблица)", "Inode", "Группы блоков", "HTree"], c: 0, e: "MFT — главная файловая таблица NTFS." },
+            { q: "Что является главной структурой ext3?", a: ["Таблицы Inode и группы блоков", "MFT", "HTree", "Экстенты"], c: 0, e: "ext3: Inode и группы блоков." },
+            { q: "Что является главной структурой ext4?", a: ["Гибкие группы блоков, HTree", "MFT", "Inode", "FAT"], c: 0, e: "ext4: гибкие группы блоков, HTree." },
+            { q: "Какой максимальный размер тома у NTFS (практически)?", a: ["До 8 ПБ", "До 32 ТБ", "До 1 ЭБ", "До 2 ТБ"], c: 0, e: "NTFS — до 8 ПБ практически." },
+            { q: "Какой максимальный размер тома у ext3?", a: ["До 32 ТБ", "До 8 ПБ", "До 1 ЭБ", "До 2 ТБ"], c: 0, e: "ext3 — до 32 ТБ." },
+            { q: "Какой максимальный размер тома у ext4?", a: ["До 1 ЭБ", "До 32 ТБ", "До 8 ПБ", "До 2 ТБ"], c: 0, e: "ext4 — до 1 ЭБ." },
+            { q: "Что такое экстенты в NTFS?", a: ["Адресация данных", "Главная таблица", "Группы блоков", "Inode"], c: 0, e: "Экстенты — адресация данных в NTFS." },
+            { q: "Сколько прямых и косвенных указателей в ext3?", a: ["15", "10", "20", "12"], c: 0, e: "ext3: 15 прямых и косвенных указателей." },
+            { q: "Что такое delalloc в ext4?", a: ["Отложенное выделение", "Прямая адресация", "Группы блоков", "Inode"], c: 0, e: "delalloc — отложенное выделение в ext4." },
+            { q: "Что такое HTree в ext4?", a: ["Древовидная структура каталогов", "Главная таблица", "Группы блоков", "Экстенты"], c: 0, e: "HTree — древовидная структура каталогов." },
+            { q: "Какая файловая система поддерживает до 1 ЭБ?", a: ["ext4", "NTFS", "ext3", "FAT32"], c: 0, e: "ext4 — до 1 ЭБ." },
+            { q: "Какая файловая система поддерживает до 8 ПБ?", a: ["NTFS", "ext3", "ext4", "FAT32"], c: 0, e: "NTFS — до 8 ПБ." },
+            { q: "Какая файловая система поддерживает до 32 ТБ?", a: ["ext3", "NTFS", "ext4", "FAT32"], c: 0, e: "ext3 — до 32 ТБ." },
+            { q: "Что такое утилиты?", a: ["Вспомогательные программы", "ОС", "Игры", "Драйверы"], c: 0, e: "Утилиты — вспомогательные программы." },
+            { q: "Что такое драйверы?", a: ["Программы для управления устройствами", "ОС", "Утилиты", "Игры"], c: 0, e: "Драйверы — программы для управления устройствами." },
+            { q: "Что такое архиваторы?", a: ["Программы сжатия файлов", "Антивирусы", "Драйверы", "ОС"], c: 0, e: "Архиваторы — программы сжатия." },
+            { q: "Что такое антивирусы?", a: ["Программы защиты от вредоносного ПО", "Архиваторы", "Драйверы", "ОС"], c: 0, e: "Антивирусы — защита от вредоносного ПО." },
+            { q: "Что такое СУБД?", a: ["Система управления базами данных", "ОС", "Браузер", "Утилита"], c: 0, e: "СУБД — система управления базами данных." },
+            { q: "Что такое САПР?", a: ["Система автоматизированного проектирования", "ОС", "Браузер", "Утилита"], c: 0, e: "САПР — система автоматизированного проектирования." },
+            { q: "Что такое IDE?", a: ["Интегрированная среда разработки", "ОС", "Браузер", "Утилита"], c: 0, e: "IDE — интегрированная среда разработки." },
+            { q: "Что такое компилятор?", a: ["Переводчик кода в машинный язык", "Редактор", "Отладчик", "Линкер"], c: 0, e: "Компилятор — переводчик кода." },
+            { q: "Что такое отладчик?", a: ["Инструмент поиска ошибок", "Компилятор", "Редактор", "Линкер"], c: 0, e: "Отладчик — поиск ошибок." },
+            { q: "Что такое оболочка ОС?", a: ["Программа для взаимодействия с ОС", "Ядро", "Драйвер", "Утилита"], c: 0, e: "Оболочка — взаимодействие с ОС." },
+            { q: "Что такое Far Manager?", a: ["Файловый менеджер", "ОС", "Антивирус", "Браузер"], c: 0, e: "Far — файловый менеджер." },
+            { q: "Что такое Total Commander?", a: ["Файловый менеджер", "ОС", "Текстовый редактор", "Браузер"], c: 0, e: "Total Commander — файловый менеджер." },
+            { q: "Что такое Linux DE?", a: ["Графическая оболочка Linux", "Ядро", "Драйвер", "Утилита"], c: 0, e: "Linux DE — графическая оболочка." },
+            { q: "Что такое Windows?", a: ["Операционная система", "Утилита", "Драйвер", "Игра"], c: 0, e: "Windows — ОС." },
+            { q: "Что такое macOS?", a: ["Операционная система", "Утилита", "Драйвер", "Игра"], c: 0, e: "macOS — ОС." },
+            { q: "Что такое Android?", a: ["Операционная система", "Утилита", "Драйвер", "Игра"], c: 0, e: "Android — ОС." },
+            { q: "Что такое iOS?", a: ["Операционная система", "Утилита", "Драйвер", "Игра"], c: 0, e: "iOS — ОС." },
+            { q: "Что такое POST-тест?", a: ["Тест при включении ЭВМ", "Тест программы", "Тест файла", "Тест сети"], c: 0, e: "POST — тест при включении." },
+            { q: "Что такое UEFI?", a: ["Современная замена BIOS", "ОС", "Драйвер", "Утилита"], c: 0, e: "UEFI — современная замена BIOS." },
+            { q: "Что такое MFT?", a: ["Главная файловая таблица NTFS", "Группа блоков", "Inode", "Экстент"], c: 0, e: "MFT — главная файловая таблица NTFS." },
+            { q: "Что такое Inode?", a: ["Структура данных в ext3/ext4", "Главная таблица NTFS", "Экстент", "Группа блоков"], c: 0, e: "Inode — структура данных в ext3/ext4." },
+            { q: "Что такое экстент?", a: ["Непрерывная область диска", "Главная таблица", "Inode", "Группа блоков"], c: 0, e: "Экстент — непрерывная область диска." },
+            { q: "Что такое группа блоков?", a: ["Структура в ext3/ext4", "Главная таблица NTFS", "Экстент", "Inode"], c: 0, e: "Группа блоков — структура в ext3/ext4." },
+            { q: "Что такое HTree?", a: ["Древовидная структура каталогов в ext4", "Главная таблица NTFS", "Экстент", "Inode"], c: 0, e: "HTree — древовидная структура каталогов." },
+            { q: "Что такое delalloc?", a: ["Отложенное выделение в ext4", "Главная таблица NTFS", "Экстент", "Inode"], c: 0, e: "delalloc — отложенное выделение." },
+            { q: "Что такое BIOS?", a: ["Базовая система ввода-вывода", "ОС", "Драйвер", "Утилита"], c: 0, e: "BIOS — базовая система ввода-вывода." },
+            { q: "Что такое RAM?", a: ["Оперативная память", "Постоянная память", "Внешняя память", "Кэш"], c: 0, e: "RAM — оперативная память." },
+            { q: "Что такое ROM?", a: ["Постоянная память", "Оперативная память", "Внешняя память", "Кэш"], c: 0, e: "ROM — постоянная память." },
+            { q: "Что такое HDD?", a: ["Жесткий диск", "Твердотельный накопитель", "Оперативная память", "Кэш"], c: 0, e: "HDD — жесткий диск." },
+            { q: "Что такое SSD?", a: ["Твердотельный накопитель", "Жесткий диск", "Оперативная память", "Кэш"], c: 0, e: "SSD — твердотельный накопитель." },
+            { q: "Что такое флеш-накопитель?", a: ["Энергонезависимая память", "Оперативная память", "Кэш", "ПЗУ"], c: 0, e: "Флеш — энергонезависимая память." },
+            { q: "Что такое оптический диск?", a: ["CD/DVD/Blu-ray", "Жесткий диск", "Флешка", "SSD"], c: 0, e: "Оптический диск — CD/DVD/Blu-ray." },
+            { q: "Что такое плоттер?", a: ["Устройство вывода для чертежей", "Устройство ввода", "Сканер", "Принтер"], c: 0, e: "Плоттер — устройство вывода чертежей." },
+            { q: "Что такое сканер?", a: ["Устройство ввода графической информации", "Устройство вывода", "Устройство хранения", "Процессор"], c: 0, e: "Сканер — устройство ввода графики." },
+            { q: "Что такое веб-камера?", a: ["Устройство ввода видео", "Устройство вывода", "Устройство хранения", "Процессор"], c: 0, e: "Веб-камера — устройство ввода видео." },
+            { q: "Что такое микрофон?", a: ["Устройство ввода звука", "Устройство вывода", "Устройство хранения", "Процессор"], c: 0, e: "Микрофон — устройство ввода звука." },
+            { q: "Что такое сенсорный экран?", a: ["Устройство ввода и вывода", "Только ввода", "Только вывода", "Хранения"], c: 0, e: "Сенсорный экран — ввод и вывод." },
+            { q: "Что такое акустическая система?", a: ["Устройство вывода звука", "Устройство ввода", "Устройство хранения", "Процессор"], c: 0, e: "Акустика — устройство вывода звука." },
+            { q: "Что такое проектор?", a: ["Устройство вывода изображения", "Устройство ввода", "Устройство хранения", "Процессор"], c: 0, e: "Проектор — устройство вывода изображения." },
+            { q: "Что такое блок питания?", a: ["Устройство подачи электроэнергии", "Устройство хранения", "Устройство ввода", "Процессор"], c: 0, e: "Блок питания — подача электроэнергии." },
+            { q: "Что такое система охлаждения?", a: ["Устройство для отвода тепла", "Устройство ввода", "Устройство хранения", "Процессор"], c: 0, e: "Система охлаждения — отвод тепла." },
+            { q: "Что такое корпус?", a: ["Защитный корпус для компонентов", "Процессор", "Память", "Монитор"], c: 0, e: "Корпус — защита компонентов." },
+            { q: "Что такое материнская плата?", a: ["Основная плата", "Процессор", "Память", "Корпус"], c: 0, e: "Материнская плата — основная плата." },
+            { q: "Что такое системная шина?", a: ["Канал связи", "Память", "Процессор", "Порт"], c: 0, e: "Системная шина — канал связи." },
+            { q: "Что такое кэш-память?", a: ["Сверхбыстрая память", "Основная память", "Внешняя память", "ПЗУ"], c: 0, e: "Кэш — сверхбыстрая память." },
+            { q: "Что такое регистры?", a: ["Сверхбыстрая внутренняя память", "Внешняя память", "ОЗУ", "ПЗУ"], c: 0, e: "Регистры — сверхбыстрая внутренняя память." },
+            { q: "Что такое ОЗУ?", a: ["Оперативная энергозависимая память", "Постоянная память", "Внешняя память", "Кэш"], c: 0, e: "ОЗУ — оперативная энергозависимая память." },
+            { q: "Что такое ПЗУ?", a: ["Постоянная энергонезависимая память", "Оперативная память", "Внешняя память", "Кэш"], c: 0, e: "ПЗУ — постоянная энергонезависимая память." },
+            { q: "Что такое ВЗУ?", a: ["Внешнее запоминающее устройство", "Внутреннее запоминающее устройство", "Оперативная память", "Кэш"], c: 0, e: "ВЗУ — внешнее запоминающее устройство." },
+            { q: "Что такое HDD?", a: ["Накопитель на жестких магнитных дисках", "Твердотельный накопитель", "Оперативная память", "Кэш"], c: 0, e: "HDD — Hard Disk Drive." },
+            { q: "Что такое SSD?", a: ["Твердотельный накопитель", "Жесткий диск", "Оперативная память", "Кэш"], c: 0, e: "SSD — Solid-State Drive." },
+            { q: "Что такое BIOS?", a: ["Базовая система ввода-вывода", "ОС", "Драйвер", "Утилита"], c: 0, e: "BIOS — базовая система ввода-вывода." },
+            { q: "Что такое CPU?", a: ["Центральный процессор", "Память", "Устройство ввода", "Устройство вывода"], c: 0, e: "CPU — Central Processing Unit." },
+            { q: "Что такое АЛУ?", a: ["Арифметико-логическое устройство", "Алгоритмическое логическое устройство", "Аппаратное логическое устройство", "Аналоговое логическое устройство"], c: 0, e: "АЛУ — арифметико-логическое устройство." },
+            { q: "Что такое УУ?", a: ["Устройство управления", "Устройство ввода", "Устройство вывода", "Устройство хранения"], c: 0, e: "УУ — устройство управления." },
+            { q: "Что такое системное ПО?", a: ["Программы для обеспечения работоспособности ЭВМ", "Программы для пользователя", "Средства разработки", "Игры"], c: 0, e: "Системное ПО — для работоспособности ЭВМ." },
+            { q: "Что относится к системному ПО?", a: ["ОС, оболочки, утилиты, драйверы", "Текстовые редакторы", "СУБД", "Компиляторы"], c: 0, e: "Системное ПО: ОС, оболочки, утилиты, драйверы." },
+            { q: "Что такое прикладное ПО?", a: ["Программы для решения задач пользователя", "ОС", "Драйверы", "Компиляторы"], c: 0, e: "Прикладное ПО — для задач пользователя." },
+            { q: "Что относится к прикладному ПО общего назначения?", a: ["Текстовые редакторы, браузеры", "САПР", "Бухгалтерия", "Медицина"], c: 0, e: "Общее назначение: редакторы, браузеры." },
+            { q: "Что относится к прикладному ПО специального назначения?", a: ["САПР, бухгалтерия, медицина", "Браузеры", "Игры", "Текстовые редакторы"], c: 0, e: "Специальное: САПР, бухгалтерия, медицина." },
+            { q: "Что такое инструментальные системы?", a: ["Системы программирования", "ОС", "Утилиты", "Игры"], c: 0, e: "Инструментальные системы — системы программирования." },
+            { q: "Что относится к инструментальным системам?", a: ["Компиляторы, отладчики, IDE", "ОС", "Утилиты", "Браузеры"], c: 0, e: "Инструментальные: компиляторы, отладчики, IDE." },
+            { q: "Что такое файл?", a: ["Поименованная совокупность данных на носителе", "Программа", "Папка", "Драйвер"], c: 0, e: "Файл — поименованная совокупность данных." },
+            { q: "Из чего состоит имя файла?", a: ["Имя и расширение", "Только имя", "Только расширение", "Путь"], c: 0, e: "Имя файла = имя + расширение." },
+            { q: "Какая файловая система используется в Windows?", a: ["NTFS", "ext3", "ext4", "FAT32"], c: 0, e: "NTFS — основная для Windows." },
+            { q: "Какая файловая система используется в Linux (современный стандарт)?", a: ["ext4", "NTFS", "FAT32", "ext3"], c: 0, e: "ext4 — современный стандарт Linux." },
+            { q: "Что является главной структурой NTFS?", a: ["MFT (Главная файловая таблица)", "Inode", "Группы блоков", "HTree"], c: 0, e: "MFT — главная файловая таблица NTFS." },
+            { q: "Что является главной структурой ext3?", a: ["Таблицы Inode и группы блоков", "MFT", "HTree", "Экстенты"], c: 0, e: "ext3: Inode и группы блоков." },
+            { q: "Что является главной структурой ext4?", a: ["Гибкие группы блоков, HTree", "MFT", "Inode", "FAT"], c: 0, e: "ext4: гибкие группы блоков, HTree." },
+            { q: "Какой максимальный размер тома у NTFS (практически)?", a: ["До 8 ПБ", "До 32 ТБ", "До 1 ЭБ", "До 2 ТБ"], c: 0, e: "NTFS — до 8 ПБ практически." },
+            { q: "Какой максимальный размер тома у ext3?", a: ["До 32 ТБ", "До 8 ПБ", "До 1 ЭБ", "До 2 ТБ"], c: 0, e: "ext3 — до 32 ТБ." },
+            { q: "Какой максимальный размер тома у ext4?", a: ["До 1 ЭБ", "До 32 ТБ", "До 8 ПБ", "До 2 ТБ"], c: 0, e: "ext4 — до 1 ЭБ." },
+            { q: "Что такое экстенты в NTFS?", a: ["Адресация данных", "Главная таблица", "Группы блоков", "Inode"], c: 0, e: "Экстенты — адресация данных в NTFS." },
+            { q: "Сколько прямых и косвенных указателей в ext3?", a: ["15", "10", "20", "12"], c: 0, e: "ext3: 15 прямых и косвенных указателей." },
+            { q: "Что такое delalloc в ext4?", a: ["Отложенное выделение", "Прямая адресация", "Группы блоков", "Inode"], c: 0, e: "delalloc — отложенное выделение в ext4." },
+            { q: "Что такое HTree в ext4?", a: ["Древовидная структура каталогов", "Главная таблица", "Группы блоков", "Экстенты"], c: 0, e: "HTree — древовидная структура каталогов." },
+            { q: "Какая файловая система поддерживает до 1 ЭБ?", a: ["ext4", "NTFS", "ext3", "FAT32"], c: 0, e: "ext4 — до 1 ЭБ." },
+            { q: "Какая файловая система поддерживает до 8 ПБ?", a: ["NTFS", "ext3", "ext4", "FAT32"], c: 0, e: "NTFS — до 8 ПБ." },
+            { q: "Какая файловая система поддерживает до 32 ТБ?", a: ["ext3", "NTFS", "ext4", "FAT32"], c: 0, e: "ext3 — до 32 ТБ." },
+            { q: "Что такое утилиты?", a: ["Вспомогательные программы", "ОС", "Игры", "Драйверы"], c: 0, e: "Утилиты — вспомогательные программы." },
+            { q: "Что такое драйверы?", a: ["Программы для управления устройствами", "ОС", "Утилиты", "Игры"], c: 0, e: "Драйверы — программы для управления устройствами." },
+            { q: "Что такое архиваторы?", a: ["Программы сжатия файлов", "Антивирусы", "Драйверы", "ОС"], c: 0, e: "Архиваторы — программы сжатия." },
+            { q: "Что такое антивирусы?", a: ["Программы защиты от вредоносного ПО", "Архиваторы", "Драйверы", "ОС"], c: 0, e: "Антивирусы — защита от вредоносного ПО." },
+            { q: "Что такое СУБД?", a: ["Система управления базами данных", "ОС", "Браузер", "Утилита"], c: 0, e: "СУБД — система управления базами данных." },
+            { q: "Что такое САПР?", a: ["Система автоматизированного проектирования", "ОС", "Браузер", "Утилита"], c: 0, e: "САПР — система автоматизированного проектирования." },
+            { q: "Что такое IDE?", a: ["Интегрированная среда разработки", "ОС", "Браузер", "Утилита"], c: 0, e: "IDE — интегрированная среда разработки." },
+            { q: "Что такое компилятор?", a: ["Переводчик кода в машинный язык", "Редактор", "Отладчик", "Линкер"], c: 0, e: "Компилятор — переводчик кода." },
+            { q: "Что такое отладчик?", a: ["Инструмент поиска ошибок", "Компилятор", "Редактор", "Линкер"], c: 0, e: "Отладчик — поиск ошибок." }
+        ];
+
+        // ===== QUIZ STATE =====
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let userAnswers = [];
+
+        const startScreen = document.getElementById('start-screen');
+        const quizScreen = document.getElementById('quiz-screen');
+        const resultScreen = document.getElementById('result-screen');
+        const questionText = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const explanationBox = document.getElementById('explanation-box');
+        const nextBtnContainer = document.getElementById('next-btn-container');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentQNum = document.getElementById('current-q-num');
+        const totalQNum = document.getElementById('total-q-num');
+        const correctCountEl = document.getElementById('correct-count');
+        const wrongCountEl = document.getElementById('wrong-count');
+        const rankDisplay = document.getElementById('rank-display');
+        const scoreDetails = document.getElementById('score-details');
+        const errorList = document.getElementById('error-list');
+        const currentDiscLabel = document.getElementById('current-disc-label');
+
+        function shuffleArray(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function getActiveQuestions() {
+            if (activeDiscipline === 'algo') return algoQuestions;
+            if (activeDiscipline === 'evm') return evmQuestions;
+            return [...algoQuestions, ...evmQuestions];
+        }
+
+        function updateDiscLabel() {
+            const names = {
+                'algo': 'Алгоритмизация и программирование',
+                'evm': 'ЭВМ и Архитектура',
+                'mix': 'Микс (все вопросы)'
+            };
+            currentDiscLabel.innerHTML = `Активная дисциплина: <span style="color: var(--neon-green);">${names[activeDiscipline]}</span>`;
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('theory-tab').classList.add('hidden');
+            document.getElementById('quiz-tab').classList.add('hidden');
+
+            if (tab === 'theory') {
+                document.querySelector('.nav-btn:nth-child(1)').classList.add('active');
+                document.getElementById('theory-tab').classList.remove('hidden');
+            } else {
+                document.querySelector('.nav-btn:nth-child(2)').classList.add('active');
+                document.getElementById('quiz-tab').classList.remove('hidden');
+                document.getElementById('start-screen').classList.remove('hidden');
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('result-screen').classList.add('hidden');
+                updateDiscLabel();
+            }
+        }
+
+        function switchDiscipline(disc) {
+            activeDiscipline = disc;
+            document.querySelectorAll('.disc-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.disc === disc);
+            });
+
+            document.getElementById('theory-algo').classList.toggle('hidden', disc !== 'algo');
+            document.getElementById('theory-evm').classList.toggle('hidden', disc !== 'evm');
+            
+            if (disc === 'mix') {
+                document.getElementById('theory-algo').classList.remove('hidden');
+                document.getElementById('theory-evm').classList.remove('hidden');
+            }
+
+            if (activeTab === 'quiz') {
+                document.getElementById('start-screen').classList.remove('hidden');
+                document.getElementById('quiz-screen').classList.add('hidden');
+                document.getElementById('result-screen').classList.add('hidden');
+                updateDiscLabel();
+            }
+        }
+
+        function startQuiz(count) {
+            const pool = getActiveQuestions();
+            const shuffled = shuffleArray([...pool]);
+            currentQuestions = shuffled.slice(0, Math.min(count, shuffled.length));
+
+            currentQuestions = currentQuestions.map(q => {
+                const options = [...q.a];
+                const correctAnswer = options[q.c];
+                shuffleArray(options);
+                const newCorrectIndex = options.indexOf(correctAnswer);
+                return { ...q, a: options, c: newCorrectIndex };
+            });
+
+            currentQuestionIndex = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            userAnswers = [];
+
+            startScreen.classList.add('hidden');
+            quizScreen.classList.remove('hidden');
+            resultScreen.classList.add('hidden');
+
+            totalQNum.textContent = currentQuestions.length;
+            correctCountEl.textContent = '0';
+            wrongCountEl.textContent = '0';
+
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showResults();
+                return;
+            }
+
+            const q = currentQuestions[currentQuestionIndex];
+            currentQNum.textContent = currentQuestionIndex + 1;
+            const progress = (currentQuestionIndex / currentQuestions.length) * 100;
+            progressBar.style.width = progress + '%';
+
+            questionText.textContent = q.q;
+            optionsContainer.innerHTML = '';
+            explanationBox.classList.remove('show');
+            explanationBox.textContent = '';
+            nextBtnContainer.classList.remove('show');
+
+            q.a.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.textContent = option;
+                btn.dataset.index = index;
+                btn.onclick = () => selectAnswer(index, q);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectAnswer(selectedIndex, q) {
+            const buttons = optionsContainer.querySelectorAll('.option-btn');
+            buttons.forEach(btn => btn.disabled = true);
+
+            const isCorrect = selectedIndex === q.c;
+            buttons.forEach((btn, idx) => {
+                if (idx === q.c) btn.classList.add('correct');
+                else if (idx === selectedIndex && !isCorrect) btn.classList.add('wrong');
+            });
+
+            if (isCorrect) {
+                correctCount++;
+                correctCountEl.textContent = correctCount;
+            } else {
+                wrongCount++;
+                wrongCountEl.textContent = wrongCount;
+                userAnswers.push({ qIndex: currentQuestionIndex, questionData: q });
+            }
+
+            explanationBox.textContent = q.e;
+            explanationBox.classList.add('show');
+            nextBtnContainer.classList.add('show');
+        }
+
+        nextBtn.onclick = () => {
+            currentQuestionIndex++;
+            loadQuestion();
+        };
+
+        function showResults() {
+            quizScreen.classList.add('hidden');
+            resultScreen.classList.remove('hidden');
+
+            const total = currentQuestions.length;
+            const percent = (correctCount / total) * 100;
+
+            let rank = '';
+            if (percent >= 90) rank = 'АРХИТЕКТОР МАТРИЦЫ';
+            else if (percent >= 75) rank = 'СИСТЕМНЫЙ АДМИНИСТРАТОР ПУСТОШЕЙ';
+            else if (percent >= 60) rank = 'ОПЕРАТОР ТЕРМИНАЛА';
+            else if (percent >= 40) rank = 'СКРИПТ-КИДДИ';
+            else rank = 'НОВИЧОК В СЕТИ';
+
+            rankDisplay.textContent = `РАНГ: ${rank}`;
+            scoreDetails.innerHTML = `
+                <p>Правильных ответов: <span style="color: var(--neon-green);">${correctCount}</span> / ${total}</p>
+                <p>Неправильных ответов: <span style="color: var(--neon-pink);">${wrongCount}</span></p>
+                <p>Процент успешности: <span style="color: var(--neon-yellow);">${percent.toFixed(1)}%</span></p>
+            `;
+
+            if (userAnswers.length === 0) {
+                errorList.innerHTML = '<p style="color: var(--neon-green);">Ошибок нет! Идеальный результат!</p>';
+            } else {
+                errorList.innerHTML = '';
+                userAnswers.forEach((answer, idx) => {
+                    const q = answer.questionData;
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-item';
+                    errorDiv.innerHTML = `
+                        <div class="q-text">${idx + 1}. ${q.q}</div>
+                        <div class="correct-ans">Правильный ответ: ${q.a[q.c]}</div>
+                        <div class="explain-text">${q.e}</div>
+                    `;
+                    errorList.appendChild(errorDiv);
+                });
+            }
+        }
+
+        updateDiscLabel();
+    </script>
+</body>
+  </html>
