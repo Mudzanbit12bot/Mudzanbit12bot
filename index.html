@@ -39,6 +39,7 @@
             line-height: 1.6;
             display: flex;
             flex-direction: column;
+            padding-bottom: 120px; /* Отступ под нижний баннер */
         }
 
         #matrix-canvas {
@@ -47,28 +48,40 @@
             z-index: -1; opacity: 0.12;
         }
 
-        /* ===== STICKY AD ===== */
-        .sticky-ad-banner {
-            position: sticky; top: 0; z-index: 1000;
-            background: rgba(0, 5, 10, 0.95);
-            border-bottom: 1px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-            backdrop-filter: blur(5px);
-            padding: 8px 0;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 60px;
+        /* ===== ФИКСИРОВАННЫЙ БАННЕР СНИЗУ ===== */
+        .bottom-ad-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 9999;
+            background: rgba(5, 5, 5, 0.98);
+            border-top: 1px solid var(--neon-pink);
+            box-shadow: 0 -5px 20px rgba(255, 0, 85, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100px;
+            padding: 5px;
         }
+        
         .ad-container {
-            width: 100%; max-width: 728px; height: 90px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px dashed var(--neon-pink);
-            display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px dashed var(--neon-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
         }
+
         .ad-container::before {
             content: 'СПОНСОРСКИЙ КИБЕР-МОДУЛЬ // YANDEX.RTB';
             position: absolute; top: 2px; left: 5px;
-            font-size: 8px; color: var(--neon-pink);
+            font-size: 8px; color: var(--neon-blue);
             letter-spacing: 1px; opacity: 0.7;
             z-index: 2;
             pointer-events: none;
@@ -106,9 +119,7 @@
             letter-spacing: 1px;
             opacity: 0.7;
         }
-        .author-credit span {
-            color: var(--neon-yellow);
-        }
+        .author-credit span { color: var(--neon-yellow); }
         @keyframes glitch {
             0%, 100% { transform: translate(0); }
             2% { transform: translate(2px, -2px); }
@@ -455,35 +466,20 @@
         ::-webkit-scrollbar-thumb:hover { background: var(--neon-green); }
 
         @media (max-width: 768px) {
-            .sticky-ad-banner { padding: 5px 0; }
-            .ad-container { height: 60px; max-width: 320px; }
+            .bottom-ad-banner { min-height: 70px; }
+            .ad-container { height: 60px; max-width: 100%; }
             .cyber-header h1 { font-size: 1.8rem; }
             .panel { padding: 15px; }
             .question-text { font-size: 1.05rem; }
             .scheme-container { flex-direction: column; }
             .disc-btn { font-size: 0.8rem; padding: 8px 14px; }
+            body { padding-bottom: 90px; }
         }
     </style>
 </head>
 <body>
 
     <canvas id="matrix-canvas"></canvas>
-
-    <!-- Sticky Ad Banner -->
-    <div class="sticky-ad-banner">
-        <div class="ad-container" id="yandex-rtb-banner">
-            <!-- Yandex.RTB R-A-20361605-1 -->
-            <div id="yandex_rtb_R-A-20361605-1"></div>
-            <script>
-            window.yaContextCb.push(() => {
-                Ya.Context.AdvManager.render({
-                    "blockId": "R-A-20361605-1",
-                    "renderTo": "yandex_rtb_R-A-20361605-1"
-                })
-            })
-            </script>
-        </div>
-    </div>
 
     <div class="main-container">
         <div class="cyber-header">
@@ -879,6 +875,22 @@ if (r > 0) {
         Разработал: <span>Рябчук Иван Андреевич</span> | АиКИ, 1 курс | 2024
     </div>
 
+    <!-- ===== ФИКСИРОВАННЫЙ БАННЕР СНИЗУ ===== -->
+    <div class="bottom-ad-banner">
+        <div class="ad-container" id="yandex-rtb-banner">
+            <!-- Yandex.RTB R-A-20361605-1 -->
+            <div id="yandex_rtb_R-A-20361605-1"></div>
+            <script>
+            window.yaContextCb.push(() => {
+                Ya.Context.AdvManager.render({
+                    "blockId": "R-A-20361605-1",
+                    "renderTo": "yandex_rtb_R-A-20361605-1"
+                })
+            })
+            </script>
+        </div>
+    </div>
+
     <script>
         // ===== MATRIX RAIN =====
         const canvas = document.getElementById('matrix-canvas');
@@ -912,7 +924,7 @@ if (r > 0) {
         let activeDiscipline = 'algo';
         let activeTab = 'theory';
 
-        // ===== DATA: ALGO QUESTIONS =====
+        // ===== DATA: ALGO QUESTIONS (120+) =====
         const algoQuestions = [
             { q: "Что такое величина в программировании?", a: ["Характеристика объекта, существенная для задачи", "Тип данных", "Переменная", "Константа"], c: 0, e: "Величина — характеристика объекта (длина, площадь, количество)." },
             { q: "Что такое данные?", a: ["Совокупность величин, обрабатываемых при решении задачи", "Программа", "Алгоритм", "Компьютер"], c: 0, e: "Данные — совокупность величин." },
@@ -1120,7 +1132,7 @@ if (r > 0) {
             { q: "Что такое signed в C++?", a: ["Знаковый тип", "Беззнаковый тип", "Вещественный тип", "Символьный тип"], c: 0, e: "signed — знаковый тип." }
         ];
 
-        // ===== DATA: EVM QUESTIONS =====
+        // ===== DATA: EVM QUESTIONS (120+) =====
         const evmQuestions = [
             { q: "Что такое данные согласно конспекту?", a: ["Зарегистрированные сигналы", "Обработанная информация", "Программа", "Алгоритм"], c: 0, e: "Данные — это зарегистрированные сигналы." },
             { q: "Что такое информация согласно конспекту?", a: ["Результат слияния данных и адекватных им методов", "Зарегистрированные сигналы", "Программа", "Алгоритм"], c: 0, e: "Информация — результат слияния данных и адекватных им методов." },
@@ -1490,4 +1502,4 @@ if (r > 0) {
         updateDiscLabel();
     </script>
 </body>
-  </html>
+    </html>
